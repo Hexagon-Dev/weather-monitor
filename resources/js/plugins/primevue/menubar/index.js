@@ -25,6 +25,7 @@ export default {
             'items-center',
             'flex-wrap',
             'flex-col sm:flex-row',
+            'gap-2',
             { hidden: !props?.mobileActive, flex: props?.mobileActive },
 
             // Position
@@ -33,7 +34,7 @@ export default {
             'sm:top-auto sm:left-auto',
 
             // Size
-            'w-full sm:w-auto',
+            'w-full',
 
             // Spacing
             'm-0',

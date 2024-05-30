@@ -6,8 +6,8 @@
 
         <title>Weather Monitor</title>
     </head>
-    <body class="h-full">
-        <div id="app"></div>
+    <body>
+        <div id="app" class="h-screen overflow-hidden flex flex-col"></div>
         @vite(['resources/js/app.ts'])
     </body>
 </html>

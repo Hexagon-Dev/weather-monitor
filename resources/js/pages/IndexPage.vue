@@ -1,9 +1,10 @@
 <script setup lang="ts">
-const text = 'Hello world!';
 </script>
 
 <template>
-	<h1 class="font-bold">
-		{{ text }}
-	</h1>
+	<div class="size-full flex items-center justify-center">
+		<h1 class="text-2xl font-bold text-surface-500 dark:text-white/80">
+			Welcome to Weather Monitor
+		</h1>
+	</div>
 </template>

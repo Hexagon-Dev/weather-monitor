@@ -1,13 +1,105 @@
 <script setup lang="ts">
+import { api } from '@/plugins/api';
+import { MetaHTMLAttributes, ref, watch } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import Toast from 'primevue/toast';
+import router from '@/plugins/router';
 
+const userStore = useUserStore();
+
+function initializeCsrfToken() {
+  const token = document.head.querySelector('meta[name="csrf-token"]') as MetaHTMLAttributes;
+
+  if (token) {
+    api.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+  } else {
+    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+  }
+}
+
+initializeCsrfToken();
+
+if (userStore.isAuthenticated) {
+  userStore.fetchMe();
+}
+
+const menuItems = [
+  {
+    label: 'Home',
+    icon: 'home',
+    route: 'index',
+  },
+  {
+    label: 'Login',
+    icon: 'sign-in',
+    route: 'login',
+    visible: () => !userStore.isAuthenticated,
+    class: 'md:ml-auto ml-0',
+  },
+  {
+    label: 'Register',
+    icon: 'user-plus',
+    route: 'register',
+    visible: () => !userStore.isAuthenticated,
+  },
+  {
+    label: 'Profile',
+    icon: 'user',
+    route: 'profile',
+    visible: () => userStore.isAuthenticated,
+    class: 'md:ml-auto ml-0',
+  },
+  {
+    label: 'Logout',
+    icon: 'sign-out',
+    route: 'logout',
+    visible: () => userStore.isAuthenticated,
+  },
+];
 </script>
 
 <template>
 	<div class="size-full">
+		<Menubar v-if="!router.currentRoute.value?.meta?.hideNavigation" :model="menuItems">
+			<template #item="{ item }">
+				<router-link
+					v-if="item.route"
+					v-slot="{ href, navigate, isActive }"
+					:to="{ name: item.route }"
+					custom
+				>
+					<a
+						:href="href"
+						class="p-2 block text-center rounded duration-200"
+						:class="[
+							item.class,
+							isActive ? 'bg-primary-500 text-white' : 'text-surface-500 dark:text-white/80'
+						]"
+						@click="navigate"
+					>
+						<font-awesome-icon :icon="item.icon" />
+						<span class="ml-2">{{ item.label }}</span>
+					</a>
+				</router-link>
+
+				<a
+					v-else
+					class="p-2 block"
+					:href="item.url"
+					:target="item.target"
+				>
+					<font-awesome-icon :icon="item.icon" />
+					<span class="ml-2">{{ item.label }}</span>
+				</a>
+			</template>
+		</Menubar>
+
 		<router-view v-slot="{ Component, route }">
 			<transition mode="out-in">
 				<component :is="Component" :key="route.path" />
 			</transition>
 		</router-view>
+
+		<Toast />
 	</div>
 </template>
