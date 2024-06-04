@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Models;
+
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+
+/**
+ * @property int $id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property string $name
+ * @property string $code
+ * @property int $type
+ * @property string $latitude
+ * @property string $longitude
+ * @property int|null $parent_id
+ * @method static Builder|Location newModelQuery()
+ * @method static Builder|Location newQuery()
+ * @method static Builder|Location query()
+ * @method static Builder|Location whereCode($value)
+ * @method static Builder|Location whereCreatedAt($value)
+ * @method static Builder|Location whereId($value)
+ * @method static Builder|Location whereLatitude($value)
+ * @method static Builder|Location whereLongitude($value)
+ * @method static Builder|Location whereName($value)
+ * @method static Builder|Location whereParentId($value)
+ * @method static Builder|Location whereType($value)
+ * @method static Builder|Location whereUpdatedAt($value)
+ * @property string|null $slug
+ * @property-read Collection<int, Location> $children
+ * @property-read int|null $children_count
+ * @property-read Location|null $parent
+ * @property-read Collection<int, Weather> $weather
+ * @property-read int|null $weather_count
+ * @method static Builder|Location whereSlug($value)
+ * @mixin Eloquent
+ */
+class Location extends Model
+{
+    use HasFactory;
+
+    protected $guarded = [];
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Location::class, 'parent_id');
+    }
+
+    public function weather(): HasMany
+    {
+        return $this->hasMany(Weather::class);
+    }
+
+    public function slug(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value,
+            set: fn ($value) => $this->getSlug($value)
+        );
+    }
+
+    public function getSlug(string $value): string
+    {
+        $firstPart = explode('/', str_replace('м.', '', $value))[0];
+
+        $transliterated = \Transliterator::create('Ukrainian-Latin/BGN')->transliterate($firstPart);
+
+        return Str::slug($transliterated);
+    }
+}

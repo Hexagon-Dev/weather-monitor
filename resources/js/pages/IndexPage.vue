@@ -1,10 +1,26 @@
 <script setup lang="ts">
+import UkraineMap from '@/components/UkraineMap.vue';
+import { useLocationsStore } from '@/stores/locationsStore';
+
+const locationsStore = useLocationsStore();
 </script>
 
 <template>
-	<div class="size-full flex items-center justify-center">
-		<h1 class="text-2xl font-bold text-surface-500 dark:text-white/80">
-			Welcome to Weather Monitor
-		</h1>
+	<div class="h-full p-8 flex lg:flex-row flex-col lg:gap-4 gap-8">
+		<UkraineMap class="lg:w-2/3 w-auto sm:block hidden flex-none" />
+
+		<div class="card flex flex-col gap-2 lg:w-1/3 w-auto">
+			<h2 class="text-2xl font-bold">
+				Welcome To Weather Monitor
+			</h2>
+
+			<h2>
+				Please, select location
+			</h2>
+
+			<div class="flex flex-col gap-2 overflow-y-auto h-full">
+				<Button v-for="location in locationsStore.locations" :label="location.name" class="flex-none" />
+			</div>
+		</div>
 	</div>
 </template>

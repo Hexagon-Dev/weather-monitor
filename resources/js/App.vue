@@ -1,23 +1,13 @@
 <script setup lang="ts">
-import { api } from '@/plugins/api';
-import { MetaHTMLAttributes, ref, watch } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import Toast from 'primevue/toast';
 import router from '@/plugins/router';
+import { useLocationsStore } from '@/stores/locationsStore';
 
 const userStore = useUserStore();
+const locationsStore = useLocationsStore();
 
-function initializeCsrfToken() {
-  const token = document.head.querySelector('meta[name="csrf-token"]') as MetaHTMLAttributes;
-
-  if (token) {
-    api.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-  } else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
-  }
-}
-
-initializeCsrfToken();
+locationsStore.fetchLocations();
 
 if (userStore.isAuthenticated) {
   userStore.fetchMe();
@@ -59,8 +49,18 @@ const menuItems = [
 </script>
 
 <template>
-	<div class="size-full">
+	<div class="size-full flex flex-col">
 		<Menubar v-if="!router.currentRoute.value?.meta?.hideNavigation" :model="menuItems">
+			<template #start>
+				<div class="mr-6 flex items-center gap-2 whitespace-nowrap">
+					<font-awesome-icon icon="sun" size="2xl" class="text-primary-500" />
+
+					<h1 class="text-xl font-bold text-surface-500 dark:text-white/80">
+						Weather Monitor
+					</h1>
+				</div>
+			</template>
+
 			<template #item="{ item }">
 				<router-link
 					v-if="item.route"
@@ -94,11 +94,13 @@ const menuItems = [
 			</template>
 		</Menubar>
 
-		<router-view v-slot="{ Component, route }">
-			<transition mode="out-in">
-				<component :is="Component" :key="route.path" />
-			</transition>
-		</router-view>
+		<div class="overflow-auto h-full">
+			<router-view v-slot="{ Component, route }">
+				<transition mode="out-in">
+					<component :is="Component" :key="route.path" />
+				</transition>
+			</router-view>
+		</div>
 
 		<Toast />
 	</div>

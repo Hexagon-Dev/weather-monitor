@@ -35,6 +35,7 @@
         "@fortawesome/vue-fontawesome": "^3.0.8",
         "@types/node": "^20.12.13",
         "@vitejs/plugin-vue": "^5.0.4",
+        "date-fns": "^3.6.0",
         "pinia": "^2.1.7",
         "pinia-plugin-persistedstate": "^3.2.1",
         "primevue": "^3.52.0",

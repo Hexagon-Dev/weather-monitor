@@ -1,16 +1,28 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
+  faBolt,
+  faCaretDown,
+  faCaretUp,
   faCheck,
   faChevronLeft,
+  faCloud,
+  faCloudBolt,
+  faCloudMoon,
+  faCloudRain,
+  faCloudShowersHeavy,
+  faCloudSun,
+  faCloudSunRain,
   faFloppyDisk,
   faHome,
   faPencil,
   faSignIn,
   faSignOut,
   faSpinner,
+  faSun,
   faTimes,
   faUser,
-  faUserPlus
+  faUserPlus,
+  faWind,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -25,4 +37,17 @@ library.add(
   faFloppyDisk,
   faSpinner,
   faCheck,
+  faCaretUp,
+  faCaretDown,
+
+  faSun,
+  faCloud,
+  faCloudRain,
+  faCloudShowersHeavy,
+  faCloudSunRain,
+  faCloudSun,
+  faCloudMoon,
+  faCloudBolt,
+  faBolt,
+  faWind,
 );

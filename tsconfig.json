@@ -3,7 +3,6 @@
     "compilerOptions": {
         "paths": {
             "@/*": ["./resources/js/*"],
-            "@components/*": ["../vue-components/*"]
         },
         "types": ["vite/client", "vitest/globals"],
         "moduleResolution": "node",

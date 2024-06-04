@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
@@ -34,5 +36,13 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('me', [UserController::class, 'getMe']);
             Route::put('me', [UserController::class, 'updateMe']);
         });
+    });
+
+    Route::group(['prefix' => 'weather'], function () {
+        Route::get('{location}', [WeatherController::class, 'get']);
+    });
+
+    Route::group(['prefix' => 'locations'], function () {
+        Route::get('/', [LocationController::class, 'index']);
     });
 });
