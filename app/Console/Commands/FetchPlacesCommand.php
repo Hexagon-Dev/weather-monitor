@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Location;
+use App\Services\LocationService;
 use App\Structures\Enums\LocationTypeEnum;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -24,10 +25,11 @@ class FetchPlacesCommand extends Command
             if (!$location) {
                 $coordinates = $this->fetchCoordinates($place['label']);
 
-                $name = explode('/', $place['label'])[0];
+                $name = $this->formatName(explode('/', $place['label'])[0], true);
 
                 $location = Location::query()->create([
-                    'name' => $this->formatName($name),
+                    'name' => $name,
+                    'slug' => LocationService::generateSlug($name),
                     'code' => $place['code'],
                     'type' => LocationTypeEnum::REGION,
                     'latitude' => $coordinates['latitude'],
@@ -55,8 +57,11 @@ class FetchPlacesCommand extends Command
                     if (!$locationCity) {
                         $coordinates = $this->fetchCoordinates($place['label']);
 
+                        $name = $this->formatName($city['label'], false);
+
                         Location::query()->create([
-                            'name' => $this->formatName($city['label']),
+                            'name' => $name,
+                            'slug' => LocationService::generateSlug($name),
                             'code' => $city['code'],
                             'type' => LocationTypeEnum::CITY,
                             'latitude' => $coordinates['latitude'],
@@ -81,7 +86,7 @@ class FetchPlacesCommand extends Command
         return ['latitude' => $coordinates[0]['lat'], 'longitude' => $coordinates[0]['lon']];
     }
 
-    function formatName(string $locationName): string
+    function formatName(string $locationName, bool $isRegion): string
     {
         $names = explode('/', str_replace('М.', '', $locationName));
 
@@ -89,9 +94,9 @@ class FetchPlacesCommand extends Command
         $city = $names[1] ?? '';
 
         if (!empty($city)) {
-            $city = 'м.' . Str::title($city);
+            $city = ($isRegion ? '' : 'м.') . Str::title($city);
         } else {
-            $name = 'м.' . Str::title($name);
+            $name = ($isRegion ? '' : 'м.') . Str::title($name);
         }
 
         return !empty($city) ? $name . '/' . $city : $name;
