@@ -34,11 +34,13 @@ const selectedDate = ref<Date>(new Date());
 					{{ location.name }}
 				</h1>
 
-				<h2>
-					{{ selectedDate }}
+				<h2 class="text-surface-600">
+					Nice city.
 				</h2>
 
 				<DailyForecastBlock v-model="selectedDate" :selected-location="location" />
+
+				<HourlyForecastBlock v-model="selectedDate" :selected-location="location" />
 			</div>
 		</transition>
 	</div>

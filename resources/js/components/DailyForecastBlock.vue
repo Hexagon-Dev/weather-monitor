@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { IconsMap } from '@/constants';
 import { format, getDayOfYear, getHours, isToday } from 'date-fns';
 import { computed } from 'vue';
 import { Weather, WeatherDay, Location } from '@/types';
@@ -104,8 +103,8 @@ const { smallerOrEqual } = useBreakpoints(breakpointsTailwind);
 		<template v-else>
 			<div
 				v-if="weatherNow"
-				class="flex flex-col items-center justify-center gap-4 md:min-w-48 md:w-auto w-full flex-none rounded-lg
-					bg-primary-500 text-white px-4 md:py-8 py-4"
+				class="flex flex-col items-center justify-center gap-4 min-w-48 md:max-w-[33%] max-w-auto md:w-auto w-full
+					flex-none rounded-lg bg-primary-500 text-white px-4 md:py-8 py-4"
 			>
 				<h2 class="text-xl font-bold break-words text-center">
 					{{ selectedLocation!.name }}
@@ -117,7 +116,7 @@ const { smallerOrEqual } = useBreakpoints(breakpointsTailwind);
 
 				<p class="text-4xl font-bold">
 					{{ weatherNow.temperature }}°C
-					<font-awesome-icon :icon="IconsMap[weatherNow.type]" class="ml-2" />
+					<WeatherIcon :type="weatherNow.type" class="ml-2" />
 				</p>
 
 				<div>
@@ -149,7 +148,7 @@ const { smallerOrEqual } = useBreakpoints(breakpointsTailwind);
 						{{ isToday(weatherDay.forecasted_at) ? 'Today' : format(weatherDay.forecasted_at, 'EEE') }}
 					</div>
 
-					<font-awesome-icon :icon="IconsMap[weatherDay.type]" class="text-primary-500" size="lg" />
+					<WeatherIcon :type="weatherDay.type" class="text-primary-500" size="lg" />
 
 					<p class="font-black w-12 flex-none">
 						{{ smallerOrEqual('md') ? weatherDay.max : weatherDay.min }}°C
