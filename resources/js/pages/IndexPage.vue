@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import UkraineMap from '@/components/UkraineMap.vue';
 import { useLocationsStore } from '@/stores/locationsStore';
+import router from '@/plugins/router';
 
 const locationsStore = useLocationsStore();
 </script>
@@ -19,7 +20,13 @@ const locationsStore = useLocationsStore();
 			</h2>
 
 			<div class="flex flex-col gap-2 overflow-y-auto h-full">
-				<Button v-for="location in locationsStore.locations" :label="location.name" class="flex-none" />
+				<Button
+					v-for="location in locationsStore.locations"
+					:key="location.id"
+					:label="location.name"
+					class="flex-none"
+					@click="router.push('/forecast/' + location.slug)"
+				/>
 			</div>
 		</div>
 	</div>

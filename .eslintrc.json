@@ -33,7 +33,7 @@
         "vue/max-len": ["warn", {
             "code": 120,
             "template": 120,
-            "tabWidth": 4,
+            "tabWidth": 2,
             "comments": 120
         }],
         "vue/html-indent": ["warn", "tab", {

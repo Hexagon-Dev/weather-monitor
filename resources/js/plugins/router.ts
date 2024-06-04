@@ -11,6 +11,14 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
+    path: '/forecast/:slug',
+    name: 'forecast',
+    component: () => import('@/pages/ForecastPage.vue'),
+    meta: {
+      title: 'Home',
+    },
+  },
+  {
     path: '/register',
     name: 'register',
     component: () => import('@/pages/RegisterPage.vue'),

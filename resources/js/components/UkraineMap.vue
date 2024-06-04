@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import cities from '@/assets/cities.json';
-import { Location } from '@/types';
 import { useLocationsStore } from '@/stores/locationsStore';
+import router from '@/plugins/router';
 
 const locationsStore = useLocationsStore();
-
-const selectedCity = defineModel<Location | null>();
 </script>
 
 <template>
@@ -21,11 +19,8 @@ const selectedCity = defineModel<Location | null>();
 			:d="city.d"
 			fill="currentColor"
 			stroke="#FFFFFF"
-			:class="[
-				selectedCity?.code === city.id ? 'text-primary-500 hover:!text-primary-500' : 'text-surface-500'
-			]"
-			class="cursor-pointer hover:text-primary-500/50 transition-colors duration-200 ease-in-out"
-			@click="selectedCity = locationsStore.locations.find((location) => location.code === city.id)"
+			class="cursor-pointer hover:text-primary-500/50 text-surface-500 duration-200 ease-in-out"
+			@click="router.push('/forecast/' + locationsStore.locations.find((location) => location.code === city.id).slug)"
 		/>
 	</svg>
 </template>

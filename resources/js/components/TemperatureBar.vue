@@ -5,6 +5,7 @@ const props = defineProps<{
   min: number;
   max: number;
   values: Array<{ min: number, max: number }>
+	isHorizontal: boolean;
 }>();
 
 const minTemp = computed(() => Math.min(...props.values.map(v => v.min)));
@@ -19,6 +20,12 @@ const marginRight = computed(() => {
 });
 
 const maskStyle = computed(() => {
+	if (!props.isHorizontal) {
+		return {
+			clipPath: `inset(${marginRight.value} 0% ${marginLeft.value} 0% round 10px)`,
+		};
+	}
+
   return {
     clipPath: `inset(0% ${marginRight.value} 0% ${marginLeft.value} round 10px)`,
   };
@@ -26,9 +33,13 @@ const maskStyle = computed(() => {
 </script>
 
 <template>
-	<div class="relative w-full h-2 bg-surface-300 rounded-full overflow-hidden">
+	<div
+		class="relative bg-surface-300 rounded-full overflow-hidden"
+		:class="[isHorizontal ? 'w-full h-2' : 'h-full w-2']"
+	>
 		<div
-			class="absolute inset-0 bg-gradient-to-r from-blue-400 via-yellow-400 to-red-400 rounded-full"
+			class="absolute inset-0 from-blue-400 via-yellow-400 to-red-400 rounded-full"
+			:class="[!isHorizontal ? 'bg-gradient-to-t' : 'bg-gradient-to-r']"
 			:style="maskStyle"
 		/>
 	</div>
