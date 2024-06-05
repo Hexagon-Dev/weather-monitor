@@ -13,7 +13,7 @@ watch(location,() => {
 	if (!location.value?.weather) {
 		locationsStore.fetchWeather(location.value);
 	}
-});
+}, { immediate: true });
 
 const selectedDate = ref<Date>(new Date());
 </script>
