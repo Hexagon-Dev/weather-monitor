@@ -1,0 +1,55 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+          node-version: current
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Vue app
+        run: npm run build
+
+      - name: Compress
+        run: |
+          tar -czf /tmp/deploy.tar.gz --exclude='node_modules' --exclude='.git' --exclude='.github' .
+          mv /tmp/deploy.tar.gz ./deploy.tar.gz
+
+      - name: Deploy
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+        env:
+          APP_DIR: ${{ vars.APP_DIR }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          user: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          first_ssh: |
+            cp $APP_DIR/.env ~/.env.backup
+            rm -rf $APP_DIR
+            mkdir -p $APP_DIR
+          scp: |
+            './deploy.tar.gz' => $APP_DIR/
+          last_ssh: |
+            cp ~/.env.backup $APP_DIR/.env
+            rm ~/.env.backup
+
+            cd $APP_DIR
+            tar -xzf deploy.tar.gz
+            rm -f deploy.tar.gz
+            (composer install --quiet --no-dev --no-interaction --ansi --ignore-platform-reqs || true)
+            php artisan key:generate
+            php artisan migrate --force
+            chmod -R 777 storage
