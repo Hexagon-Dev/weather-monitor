@@ -19,6 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
 
 /**
+
  * @property int $id
  * @property string $name
  * @property string $email
@@ -43,6 +44,10 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static Builder|User wherePassword($value)
  * @method static Builder|User whereRememberToken($value)
  * @method static Builder|User whereUpdatedAt($value)
+ * @property-read Collection<int, Location> $favouriteLocations
+ * @property-read int|null $favourite_locations_count
+ * @property-read Collection<int, LocationView> $locationViews
+ * @property-read int|null $location_views_count
  * @mixin Eloquent
  */
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
@@ -76,9 +81,9 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
         $this->attributes['password'] = bcrypt($password);
     }
 
-	public function locationViewHistory(): HasMany
+	public function locationViews(): HasMany
 	{
-		return $this->hasMany(LocationViewHistory::class);
+		return $this->hasMany(LocationView::class);
 	}
 
 	public function favouriteLocations()

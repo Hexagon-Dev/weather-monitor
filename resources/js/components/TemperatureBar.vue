@@ -34,7 +34,7 @@ const maskStyle = computed(() => {
 
 <template>
 	<div
-		class="relative bg-surface-300 rounded-full overflow-hidden"
+		class="relative bg-surface-300 dark:bg-surface-700 rounded-full overflow-hidden"
 		:class="[isHorizontal ? 'w-full h-3' : 'h-full w-3']"
 	>
 		<div

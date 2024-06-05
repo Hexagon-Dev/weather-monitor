@@ -26,7 +26,13 @@ class WeatherController extends Controller
 		/** @var User|null $user */
 		$user = \Auth::guard('sanctum')->user();
 
-		$user?->locationViewHistory()->create(['location_id' => $location->id]);
+		if ($user && $user->locationViews()->orderBy('created_at', 'desc')->first()?->location_id !== $location->id) {
+			$user->locationViews()->create(['location_id' => $location->id]);
+
+			$user->locationViews()
+				->where('created_at', '<', now()->subDays(7))
+				->delete();
+		}
 
         // If the weather data is not up-to-date, update it.
         if ($weather->count() < 168) {

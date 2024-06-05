@@ -4,10 +4,14 @@ import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import api from '@/plugins/api';
 import { useToast } from 'primevue/usetoast';
+import { useLocationsStore } from '@/stores/locationsStore';
 
 const userStore = useUserStore();
+const locationsStore = useLocationsStore();
 
 const toast = useToast();
+
+userStore.fetchMe();
 
 const isEditMode = ref(false);
 const isLoading = ref(false);
@@ -116,7 +120,7 @@ async function changePassword() {
 </script>
 
 <template>
-	<div class="size-full flex flex-col items-center justify-center">
+	<div class="size-full flex flex-wrap gap-4 items-center justify-center">
 		<Panel header="Profile">
 			<div class="flex gap-4">
 				<Panel header="Personal Info">
@@ -163,6 +167,7 @@ async function changePassword() {
 							<label for="email">Registered at:</label>
 							<p>{{ userStore.user!.created_at.slice(0, 19).replace('T', ' ') }}</p>
 						</div>
+
 						<div class="flex items-center gap-1">
 							Is email verified:
 							<font-awesome-icon
@@ -178,11 +183,23 @@ async function changePassword() {
 							:loading="isSendVerificationEmailLoading"
 							@click="sendVerificationEmail()"
 						/>
-						<Button label="Change Password" :disabled="isSendVerificationEmailLoading" @click="isChangePasswordModalVisible = true" />
+						<Button
+							label="Change Password"
+							:disabled="isSendVerificationEmailLoading"
+							@click="isChangePasswordModalVisible = true"
+						/>
 						<Button label="Delete Account" severity="danger" :disabled="isSendVerificationEmailLoading" />
 					</div>
 				</Panel>
 			</div>
+		</Panel>
+
+		<Panel header="Recently viewed locations">
+			<ul class="flex flex-col gap-2 overflow-y-auto max-h-96">
+				<li v-for="locationId in userStore.user!.location_views" :key="locationId">
+					{{ locationsStore.locations.find(loc => loc.id === locationId)?.name }}
+				</li>
+			</ul>
 		</Panel>
 
 		<Dialog

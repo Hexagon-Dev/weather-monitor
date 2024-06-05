@@ -27,4 +27,6 @@ use Illuminate\Support\Carbon;
 class FavouriteLocation extends Model
 {
     use HasFactory;
+
+	protected $guarded = [];
 }

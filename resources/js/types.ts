@@ -6,6 +6,8 @@ export interface User {
   email: string;
   created_at: string;
   is_email_verified: boolean;
+	location_views: Array<number>;
+	favourite_locations: Array<number>;
 }
 
 export interface Weather {

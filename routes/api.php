@@ -44,6 +44,6 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['prefix' => 'locations'], function () {
         Route::get('/', [LocationController::class, 'index']);
-		Route::put('/{location/favourite', [LocationController::class, 'toggleFavourite']);
+		Route::put('/{location}/favourite', [LocationController::class, 'toggleFavourite']);
     });
 });

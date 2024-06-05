@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('location_view_history', function (Blueprint $table) {
+        Schema::create('location_views', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
 			$table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('location_view_history');
+        Schema::dropIfExists('location_views');
     }
 };
