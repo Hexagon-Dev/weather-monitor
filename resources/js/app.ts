@@ -5,6 +5,7 @@ import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
 import primeVue from 'primevue/config';
 import primeVueTheme from '@/plugins/primevue';
 import ToastService from 'primevue/toastservice';
+import Tooltip from 'primevue/tooltip';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import '@/plugins/icons';
@@ -23,5 +24,6 @@ app.use(pinia)
   .use(primeVue, { unstyled: true, pt: primeVueTheme })
   .use(ToastService)
   .use(router)
+	.directive('tooltip', Tooltip)
   .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app');

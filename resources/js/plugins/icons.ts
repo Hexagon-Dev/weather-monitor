@@ -15,7 +15,7 @@ import {
 	faDroplet,
 	faFloppyDisk,
 	faHome,
-	faLocationArrow,
+	faLocationArrow, faMoon,
 	faPencil,
 	faSignIn,
 	faSignOut,
@@ -43,6 +43,7 @@ library.add(
   faCaretUp,
   faCaretDown,
 
+	faMoon,
   faSun,
   faCloud,
   faCloudRain,

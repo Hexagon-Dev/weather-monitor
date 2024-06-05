@@ -34,7 +34,7 @@ const selectedDate = ref<Date>(new Date());
 					{{ location.name }}
 				</h1>
 
-				<h2 class="text-surface-600">
+				<h2 class="text-surface-600 dark:text-surface-400">
 					Up to date hourly forecast for 7 days ahead for {{ location.name }}.
 				</h2>
 

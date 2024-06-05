@@ -3,6 +3,8 @@ import { useUserStore } from '@/stores/userStore';
 import Toast from 'primevue/toast';
 import router from '@/plugins/router';
 import { useLocationsStore } from '@/stores/locationsStore';
+import { useDark, useToggle } from '@vueuse/core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const userStore = useUserStore();
 const locationsStore = useLocationsStore();
@@ -46,11 +48,14 @@ const menuItems = [
     visible: () => userStore.isAuthenticated,
   },
 ];
+
+const isDark = useDark();
+const toggleDark = useToggle(isDark);
 </script>
 
 <template>
-	<div class="size-full flex flex-col">
-		<Menubar v-if="!router.currentRoute.value?.meta?.hideNavigation" :model="menuItems">
+	<div class="size-full flex flex-col bg-white dark:bg-surface-900 text-surface-900 dark:text-surface-300">
+		<Menubar v-if="!router.currentRoute.value?.meta?.hideNavigation" :model="menuItems" class="m-2">
 			<template #start>
 				<div class="mr-6 flex items-center gap-2 whitespace-nowrap">
 					<font-awesome-icon icon="sun" size="2xl" class="text-primary-500" />
@@ -91,6 +96,21 @@ const menuItems = [
 					<font-awesome-icon :icon="item.icon" />
 					<span class="ml-2">{{ item.label }}</span>
 				</a>
+			</template>
+
+			<template #end>
+				<Button
+					v-model="isDark"
+					v-tooltip="'Toggle theme'"
+					severity="secondary"
+					class="ml-2"
+					@click="toggleDark()"
+				>
+					<font-awesome-icon
+						:icon="isDark ? 'moon' : 'sun'"
+						size="xl"
+					/>
+				</Button>
 			</template>
 		</Menubar>
 

@@ -113,7 +113,7 @@ function selectDate(date: Date) {
 			<div
 				v-if="weatherNow"
 				class="flex flex-col items-center justify-center gap-4 min-w-48 md:max-w-[33%] max-w-auto md:w-auto w-full
-					flex-none rounded-lg bg-primary-500 text-white px-4 md:py-8 py-4"
+					flex-none rounded-lg bg-primary-500 dark:bg-primary-700 text-white px-4 md:py-8 py-4"
 			>
 				<h2 class="text-xl font-bold break-words text-center">
 					{{ selectedLocation!.name }}
@@ -143,9 +143,10 @@ function selectDate(date: Date) {
 					v-for="(weatherDay, i) in weatherByDays"
 					:key="i"
 					class="flex md:flex-col flex-row items-center text-start gap-2 border bg-white hover:bg-surface-100
-						duration-100 rounded-lg p-2 w-full"
+						dark:bg-surface-900 dark:hover:bg-surface-800 border-surface-200 dark:border-surface-700 duration-100
+						rounded-lg p-2 w-full"
 					:class="{
-						'hover:bg-white outline outline-primary-500':
+						'hover:bg-white outline outline-primary-500 dark:outline-primary-700':
 							getDayOfYear(selectedDate) === getDayOfYear(weatherDay.forecasted_at)
 					}"
 					:disabled="getDayOfYear(selectedDate) === getDayOfYear(weatherDay.forecasted_at)"
