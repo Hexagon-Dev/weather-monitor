@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -74,4 +75,14 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     {
         $this->attributes['password'] = bcrypt($password);
     }
+
+	public function locationViewHistory(): HasMany
+	{
+		return $this->hasMany(LocationViewHistory::class);
+	}
+
+	public function favouriteLocations()
+	{
+		return $this->belongsToMany(Location::class, 'favourite_locations');
+	}
 }

@@ -23,10 +23,13 @@ const locationsStore = useLocationsStore();
 				<Button
 					v-for="location in locationsStore.locations"
 					:key="location.id"
-					:label="location.name"
 					class="flex-none"
 					@click="router.push('/forecast/' + location.slug)"
-				/>
+				>
+					<div>
+						{{ location.name }}
+					</div>
+				</Button>
 			</div>
 		</div>
 	</div>

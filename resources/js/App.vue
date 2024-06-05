@@ -103,13 +103,11 @@ const toggleDark = useToggle(isDark);
 					v-model="isDark"
 					v-tooltip="'Toggle theme'"
 					severity="secondary"
+					outlined
 					class="ml-2"
 					@click="toggleDark()"
 				>
-					<font-awesome-icon
-						:icon="isDark ? 'moon' : 'sun'"
-						size="xl"
-					/>
+					<font-awesome-icon :icon="isDark ? 'moon' : 'sun'" size="xl" />
 				</Button>
 			</template>
 		</Menubar>
