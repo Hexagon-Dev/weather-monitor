@@ -10,7 +10,7 @@ const location = computed(() => {
 });
 
 watch(location,() => {
-	if (!location.value?.weather) {
+	if (location.value?.id && !location.value?.weather) {
 		locationsStore.fetchWeather(location.value);
 	}
 }, { immediate: true });
