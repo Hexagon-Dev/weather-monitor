@@ -35,7 +35,7 @@ const selectedDate = ref<Date>(new Date());
 				</h1>
 
 				<h2 class="text-surface-600">
-					Nice city.
+					Up to date hourly forecast for 7 days ahead for {{ location.name }}.
 				</h2>
 
 				<DailyForecastBlock v-model="selectedDate" :selected-location="location" />

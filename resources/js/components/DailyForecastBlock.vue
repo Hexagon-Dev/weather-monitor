@@ -12,40 +12,40 @@ const selectedDate = defineModel<Date>({ default: Date.now });
 const locationsStore = useLocationsStore();
 
 const weatherByDays = computed<Array<WeatherDay>>(() => {
-  if (!props.selectedLocation || !props.selectedLocation.weather) {
-    return [];
-  }
+	if (!props.selectedLocation || !props.selectedLocation.weather) {
+		return [];
+	}
 
-  return Object.values(props.selectedLocation.weather.reduce((acc, curr: Weather) => {
-    const date = new Date(curr.forecasted_at);
-    const day = format(date, 'yyyy-MM-dd');
+	return Object.values(props.selectedLocation.weather.reduce((acc, curr: Weather) => {
+		const date = new Date(curr.forecasted_at);
+		const day = format(date, 'yyyy-MM-dd');
 
-    const weatherToday = props.selectedLocation.weather!
-      .filter((w) => format(new Date(w.forecasted_at), 'yyyy-MM-dd') === day);
+		const weatherToday = props.selectedLocation.weather!
+			.filter((w) => format(new Date(w.forecasted_at), 'yyyy-MM-dd') === day);
 
-    const mostWeatherCodes = weatherToday.reduce((acc, curr) => {
-      if (!acc[curr.type]) {
-        acc[curr.type] = 0;
-      }
+		const mostWeatherCodes = weatherToday.reduce((acc, curr) => {
+			if (!acc[curr.type]) {
+				acc[curr.type] = 0;
+			}
 
-      acc[curr.type]++;
+			acc[curr.type]++;
 
-      return acc;
-    }, {} as Record<string, number>);
+			return acc;
+		}, {} as Record<string, number>);
 
-    const mostWeatherCode = Object.keys(mostWeatherCodes)
-      .reduce((a, b) => mostWeatherCodes[a] > mostWeatherCodes[b] ? a : b);
+		const mostWeatherCode = Object.keys(mostWeatherCodes)
+			.reduce((a, b) => mostWeatherCodes[a] > mostWeatherCodes[b] ? a : b);
 
-    acc[day] = {
-      forecasted_at: new Date(curr.forecasted_at.substring(0, 10)),
-      min: Math.min(...weatherToday.map(w => w.temperature)),
-      max: Math.max(...weatherToday.map(w => w.temperature)),
-      items: weatherToday,
-      type: mostWeatherCode,
-    };
+		acc[day] = {
+			forecasted_at: new Date(curr.forecasted_at.substring(0, 10)),
+			min: Math.min(...weatherToday.map(w => w.temperature)),
+			max: Math.max(...weatherToday.map(w => w.temperature)),
+			items: weatherToday,
+			type: mostWeatherCode,
+		};
 
-    return acc;
-  }, {} as Record<string, WeatherDay>)).slice(0, 7);
+		return acc;
+	}, {} as Record<string, WeatherDay>)).slice(0, 7);
 });
 
 const weatherNow = computed<Weather | null>(() => {
@@ -53,37 +53,46 @@ const weatherNow = computed<Weather | null>(() => {
     return null;
   }
 
-  return props.selectedLocation.weather
-    .find((w) => getHours(new Date(w.forecasted_at)) === getHours(new Date()));
+	return props.selectedLocation.weather
+		.find((w) => getHours(new Date(w.forecasted_at)) === getHours(new Date())
+			&& format(new Date(w.forecasted_at), 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd'));
 });
 
 const weatherToday = computed<Weather[]>(() => {
-  if (!props.selectedLocation || !props.selectedLocation.weather) {
-    return [];
-  }
+	if (!props.selectedLocation || !props.selectedLocation.weather) {
+		return [];
+	}
 
-  return props.selectedLocation.weather
-    .filter((w) => format(new Date(w.forecasted_at), 'yyyy-MM-dd')
-      === format(selectedDate.value, 'yyyy-MM-dd'));
+	return props.selectedLocation.weather
+		.filter((w) => format(new Date(w.forecasted_at), 'yyyy-MM-dd')
+			=== format(new Date(), 'yyyy-MM-dd'));
 });
 
 const temperatureMinToday = computed<number>(() => {
-  if (!props.selectedLocation || !props.selectedLocation.weather) {
-    return 0;
-  }
+	if (!props.selectedLocation || !props.selectedLocation.weather) {
+		return 0;
+	}
 
-  return Math.min(...weatherToday.value.map(w => w.temperature));
+	return Math.min(...weatherToday.value.map(w => w.temperature));
 });
 
 const temperatureMaxToday = computed<number>(() => {
-  if (!props.selectedLocation || !props.selectedLocation.weather) {
-    return 0;
-  }
+	if (!props.selectedLocation || !props.selectedLocation.weather) {
+		return 0;
+	}
 
-  return Math.max(...weatherToday.value.map(w => w.temperature));
+	return Math.max(...weatherToday.value.map(w => w.temperature));
 });
 
 const { smallerOrEqual } = useBreakpoints(breakpointsTailwind);
+
+function selectDate(date: Date) {
+	const newDate = new Date(date);
+
+	newDate.setHours((new Date()).getHours());
+
+	selectedDate.value = newDate;
+}
 </script>
 
 <template>
@@ -119,16 +128,14 @@ const { smallerOrEqual } = useBreakpoints(breakpointsTailwind);
 					<WeatherIcon :type="weatherNow.type" class="ml-2" />
 				</p>
 
-				<div>
-					<p class="text-xl">
-						Partly Cloudy
-					</p>
+				<p class="text-xl">
+					<WeatherName :type="weatherNow.type" />
+				</p>
 
-					<p class="text-lg">
-						<font-awesome-icon icon="caret-up" />{{ temperatureMinToday }}°C
-						<font-awesome-icon icon="caret-down" class="ml-2" /> {{ temperatureMaxToday }}°C
-					</p>
-				</div>
+				<p class="text-lg">
+					<font-awesome-icon icon="caret-up" />{{ temperatureMinToday }}°C
+					<font-awesome-icon icon="caret-down" class="ml-2" /> {{ temperatureMaxToday }}°C
+				</p>
 			</div>
 
 			<div class="flex md:flex-row flex-col justify-between md:gap-2 gap-1 w-full">
@@ -142,9 +149,9 @@ const { smallerOrEqual } = useBreakpoints(breakpointsTailwind);
 							getDayOfYear(selectedDate) === getDayOfYear(weatherDay.forecasted_at)
 					}"
 					:disabled="getDayOfYear(selectedDate) === getDayOfYear(weatherDay.forecasted_at)"
-					@click="selectedDate = weatherDay.forecasted_at"
+					@click="selectDate(weatherDay.forecasted_at)"
 				>
-					<div class="w-11 flex-none">
+					<div class="md:w-auto w-11 flex-none">
 						{{ isToday(weatherDay.forecasted_at) ? 'Today' : format(weatherDay.forecasted_at, 'EEE') }}
 					</div>
 
