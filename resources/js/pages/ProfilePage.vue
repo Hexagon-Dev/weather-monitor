@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import api from '@/plugins/api';
 import { useToast } from 'primevue/usetoast';
 import { useLocationsStore } from '@/stores/locationsStore';
+import router from '@/plugins/router';
 
 const userStore = useUserStore();
 const locationsStore = useLocationsStore();
@@ -117,13 +118,44 @@ async function changePassword() {
 
   isLoading.value = false;
 }
+
+const isToggleFavouriteLoading = ref(false);
+
+async function toggleFavourite(locationId: number) {
+	if (!userStore.user) {
+		return;
+	}
+
+	isToggleFavouriteLoading.value = true;
+
+	const index = userStore.user.favourite_locations.indexOf(locationId);
+
+	if (index === -1) {
+		userStore.user.favourite_locations.push(locationId);
+	} else {
+		userStore.user.favourite_locations.splice(index, 1);
+	}
+
+	const { status, data } = await api.put(`v1/locations/${locationId}/favourite`);
+
+	if (status !== 200) {
+		toast.add({
+			severity: 'error',
+			summary: 'Error',
+			detail: data?.message ?? 'An error occurred. Please try again.',
+			life: 10000,
+		});
+	}
+
+	isToggleFavouriteLoading.value = false;
+}
 </script>
 
 <template>
-	<div class="size-full flex flex-wrap gap-4 items-center justify-center">
-		<Panel header="Profile">
-			<div class="flex gap-4">
-				<Panel header="Personal Info">
+	<div class="size-full flex flex-wrap gap-4 items-center justify-center overflow-y-auto p-4">
+		<Panel header="Profile" class="md:w-auto w-full">
+			<div class="flex md:flex-row flex-col gap-8 md:h-96 h-auto">
+				<div>
 					<div class="flex flex-col gap-4">
 						<div class="flex flex-col gap-2">
 							<label for="name">Name</label>
@@ -159,9 +191,9 @@ async function changePassword() {
 							</template>
 						</div>
 					</div>
-				</Panel>
+				</div>
 
-				<Panel header="Misc">
+				<div>
 					<div class="flex flex-col gap-2">
 						<div class="flex flex-col">
 							<label for="email">Registered at:</label>
@@ -190,16 +222,41 @@ async function changePassword() {
 						/>
 						<Button label="Delete Account" severity="danger" :disabled="isSendVerificationEmailLoading" />
 					</div>
-				</Panel>
+				</div>
 			</div>
 		</Panel>
 
-		<Panel header="Recently viewed locations">
-			<ul class="flex flex-col gap-2 overflow-y-auto max-h-96">
-				<li v-for="locationId in userStore.user!.location_views" :key="locationId">
+		<Panel header="Recently viewed locations" class="md:w-auto w-full">
+			<div class="flex flex-col gap-2 overflow-y-auto max-h-96 h-96">
+				<Button
+					v-for="locationId in userStore.user!.location_views"
+					:key="locationId"
+					@click="router.push('/forecast/' + locationsStore.locations.find(l => l.id === locationId).slug)"
+				>
 					{{ locationsStore.locations.find(loc => loc.id === locationId)?.name }}
-				</li>
-			</ul>
+				</Button>
+			</div>
+		</Panel>
+
+		<Panel header="Favourite locations" class="md:w-auto w-full">
+			<div class="flex flex-col gap-2 overflow-y-auto max-h-96 h-96">
+				<div
+					v-for="locationId in userStore.user!.favourite_locations"
+					:key="locationId"
+					class="flex gap-2"
+				>
+					<Button
+						class="w-full"
+						@click="router.push('/forecast/' + locationsStore.locations.find(l => l.id === locationId).slug)"
+					>
+						{{ locationsStore.locations.find(loc => loc.id === locationId)?.name }}
+					</Button>
+
+					<Button outlined :disabled="isToggleFavouriteLoading" @click="toggleFavourite(locationId)">
+						<font-awesome-icon icon="times" />
+					</Button>
+				</div>
+			</div>
 		</Panel>
 
 		<Dialog

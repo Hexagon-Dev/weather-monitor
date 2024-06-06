@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at,
             'is_email_verified' => $this->hasVerifiedEmail(),
 			'location_views' => $this->locationViews->pluck('location_id'),
-			'favourite_locations' => $this->favouriteLocations->pluck('location_id'),
+			'favourite_locations' => $this->favouriteLocations->pluck('id'),
         ];
     }
 }

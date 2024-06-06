@@ -21,6 +21,7 @@ import {
 	faSignOut,
 	faSmog,
 	faSpinner,
+	faStar,
 	faSun,
 	faTimes,
 	faUser,
@@ -42,6 +43,7 @@ library.add(
   faCheck,
   faCaretUp,
   faCaretDown,
+	faStar,
 
 	faMoon,
   faSun,
