@@ -39,3 +39,13 @@ export interface Location {
 	latitude: number;
 	longitude: number;
 }
+
+export interface Review {
+	id: number;
+	created_at: string;
+	comment: string;
+	user: {
+		id: number;
+		name: string;
+	};
+}

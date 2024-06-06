@@ -41,6 +41,8 @@ const selectedDate = ref<Date>(new Date());
 				<DailyForecastBlock v-model="selectedDate" :selected-location="location" />
 
 				<HourlyForecastBlock v-model="selectedDate" :selected-location="location" />
+
+				<ReviewsBlock :selected-location="location" />
 			</div>
 		</transition>
 	</div>

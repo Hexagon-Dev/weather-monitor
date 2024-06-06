@@ -23,7 +23,7 @@ import {
 	faSpinner,
 	faStar,
 	faSun,
-	faTimes,
+	faTimes, faTrash,
 	faUser,
 	faUserPlus,
 	faWind,
@@ -45,6 +45,7 @@ library.add(
   faCaretDown,
 	faStar,
 	faSearch,
+	faTrash,
 
 	faMoon,
   faSun,

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
+
  * @property int $id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -21,6 +22,14 @@ use Illuminate\Support\Carbon;
  * @property string $latitude
  * @property string $longitude
  * @property int|null $parent_id
+ * @property string|null $slug
+ * @property-read Collection<int, Location> $children
+ * @property-read int|null $children_count
+ * @property-read Location|null $parent
+ * @property-read Collection<int, Review> $reviews
+ * @property-read int|null $reviews_count
+ * @property-read Collection<int, Weather> $weather
+ * @property-read int|null $weather_count
  * @method static Builder|Location newModelQuery()
  * @method static Builder|Location newQuery()
  * @method static Builder|Location query()
@@ -31,15 +40,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Location whereLongitude($value)
  * @method static Builder|Location whereName($value)
  * @method static Builder|Location whereParentId($value)
+ * @method static Builder|Location whereSlug($value)
  * @method static Builder|Location whereType($value)
  * @method static Builder|Location whereUpdatedAt($value)
- * @property string|null $slug
- * @property-read Collection<int, Location> $children
- * @property-read int|null $children_count
- * @property-read Location|null $parent
- * @property-read Collection<int, Weather> $weather
- * @property-read int|null $weather_count
- * @method static Builder|Location whereSlug($value)
  * @mixin Eloquent
  */
 class Location extends Model
@@ -62,4 +65,9 @@ class Location extends Model
     {
         return $this->hasMany(Weather::class);
     }
+
+	public function reviews(): HasMany
+	{
+		return $this->hasMany(Review::class);
+	}
 }
