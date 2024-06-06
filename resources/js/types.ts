@@ -36,4 +36,6 @@ export interface Location {
   code: string;
   type: number;
   weather: Array<Weather> | null;
+	latitude: number;
+	longitude: number;
 }
