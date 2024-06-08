@@ -41,7 +41,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($data, $data['remember'] ?? false)) {
-            $request->session()->regenerate();
+            session()->regenerate();
 
             return response()->json(['message' => 'Successfully logged in.']);
         }
