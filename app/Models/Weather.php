@@ -20,7 +20,8 @@ use Illuminate\Support\Carbon;
  * @property float $wind_speed
  * @property int $wind_direction
  * @property int $type
- * @property string|null $forecasted_at
+ * @property Carbon|null $forecasted_at
+ * @property-read Location|null $location
  * @method static Builder|Weather newModelQuery()
  * @method static Builder|Weather newQuery()
  * @method static Builder|Weather query()

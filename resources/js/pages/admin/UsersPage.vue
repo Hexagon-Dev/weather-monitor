@@ -11,6 +11,7 @@ const isIndexLoading = ref(false);
 const users = ref([]);
 const page = ref(1);
 const rowsPerPage = ref(10);
+const totalRecords = ref(0);
 
 async function fetchUsers() {
 	isIndexLoading.value = true;
@@ -21,7 +22,8 @@ async function fetchUsers() {
 	);
 
 	if (status === 200) {
-		users.value = data;
+		users.value = data.data;
+		totalRecords.value = data.meta.total;
 	} else {
 		toast.add({
 			severity: 'error',
@@ -99,7 +101,7 @@ async function deleteUser(id) {
 }
 
 const isCreateUserModalVisible = ref(false);
-const isCrateUserLoading = ref(false);
+const isCreateUserLoading = ref(false);
 
 const createUserForm = ref({
 	name: '',
@@ -108,7 +110,7 @@ const createUserForm = ref({
 });
 
 async function createUser() {
-	isCrateUserLoading.value = true;
+	isCreateUserLoading.value = true;
 
 	const { status, data } = await api.post('v1/admin/users', createUserForm.value);
 
@@ -138,7 +140,7 @@ async function createUser() {
 		});
 	}
 
-	isCrateUserLoading.value = false;
+	isCreateUserLoading.value = false;
 }
 </script>
 
@@ -149,17 +151,17 @@ async function createUser() {
 			modal
 			header="Create user"
 			:visible="isCreateUserModalVisible"
-			:closable="!isCrateUserLoading"
+			:closable="!isCreateUserLoading"
 		>
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col gap-2">
 					<label for="name">Name</label>
-					<InputText id="name" v-model="createUserForm.name" :disabled="isCrateUserLoading" />
+					<InputText id="name" v-model="createUserForm.name" :disabled="isCreateUserLoading" />
 				</div>
 
 				<div class="flex flex-col gap-2">
 					<label for="email">Email</label>
-					<InputText id="email" v-model="createUserForm.email" :disabled="isCrateUserLoading" />
+					<InputText id="email" v-model="createUserForm.email" :disabled="isCreateUserLoading" />
 				</div>
 
 				<div class="flex flex-col gap-2">
@@ -169,13 +171,13 @@ async function createUser() {
 						v-model="createUserForm.password"
 						toggle-mask
 						:feedback="false"
-						:disabled="isCrateUserLoading"
+						:disabled="isCreateUserLoading"
 					/>
 				</div>
 
 				<Button
 					label="Create"
-					:loading="isCrateUserLoading"
+					:loading="isCreateUserLoading"
 					@click="createUser()"
 				/>
 			</div>
@@ -187,11 +189,13 @@ async function createUser() {
 
 		<DataTable
 			v-model:editingRows="editingRows"
+			v-model:rows="rowsPerPage"
+			lazy
+			:total-records="totalRecords"
 			:loading="isIndexLoading"
 			:value="users"
 			striped-rows
 			paginator
-			:rows="rowsPerPage"
 			:rows-per-page-options="[10, 20, 50, 100]"
 			edit-mode="row"
 			data-key="id"

@@ -26,3 +26,32 @@ export enum WeatherCodeEnum {
   THUNDERSTORM_WITH_HAIL_SLIGHT = 96,
   THUNDERSTORM_WITH_HAIL_HEAVY = 99
 }
+
+export const weatherTypes = [
+	{ value: WeatherCodeEnum.CLEAR_SKY, label: 'Clear sky' },
+	{ value: WeatherCodeEnum.MAINLY_CLEAR, label: 'Mainly clear' },
+	{ value: WeatherCodeEnum.PARTLY_CLOUDY, label: 'Partly cloudy' },
+	{ value: WeatherCodeEnum.OVERCAST, label: 'Overcast' },
+	{ value: WeatherCodeEnum.FOG, label: 'Fog' },
+	{ value: WeatherCodeEnum.RIME_FOG, label: 'Rime fog' },
+	{ value: WeatherCodeEnum.DRIZZLE_LIGHT, label: 'Drizzle light' },
+	{ value: WeatherCodeEnum.DRIZZLE_MODERATE, label: 'Drizzle moderate' },
+	{ value: WeatherCodeEnum.DRIZZLE_DENSE, label: 'Drizzle dense' },
+	{ value: WeatherCodeEnum.FREEZING_DRIZZLE_LIGHT, label: 'Freezing drizzle light' },
+	{ value: WeatherCodeEnum.FREEZING_DRIZZLE_DENSE, label: 'Freezing drizzle dense' },
+	{ value: WeatherCodeEnum.RAIN_SLIGHT, label: 'Rain slight' },
+	{ value: WeatherCodeEnum.RAIN_MODERATE, label: 'Rain moderate' },
+	{ value: WeatherCodeEnum.RAIN_HEAVY, label: 'Rain heavy' },
+	{ value: WeatherCodeEnum.SNOW_SLIGHT, label: 'Snow slight' },
+	{ value: WeatherCodeEnum.SNOW_MODERATE, label: 'Snow moderate' },
+	{ value: WeatherCodeEnum.SNOW_HEAVY, label: 'Snow heavy' },
+	{ value: WeatherCodeEnum.SNOW_GRAINS, label: 'Snow grains' },
+	{ value: WeatherCodeEnum.RAIN_SHOWERS_SLIGHT, label: 'Rain showers slight' },
+	{ value: WeatherCodeEnum.RAIN_SHOWERS_MODERATE, label: 'Rain showers moderate' },
+	{ value: WeatherCodeEnum.RAIN_SHOWERS_VIOLENT, label: 'Rain showers violent' },
+	{ value: WeatherCodeEnum.SNOW_SHOWERS_SLIGHT, label: 'Snow showers slight' },
+	{ value: WeatherCodeEnum.SNOW_SHOWERS_HEAVY, label: 'Snow showers heavy' },
+	{ value: WeatherCodeEnum.THUNDERSTORM, label: 'Thunderstorm' },
+	{ value: WeatherCodeEnum.THUNDERSTORM_WITH_HAIL_SLIGHT, label: 'Thunderstorm with hail slight' },
+	{ value: WeatherCodeEnum.THUNDERSTORM_WITH_HAIL_HEAVY, label: 'Thunderstorm with hail heavy' },
+];

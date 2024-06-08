@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignIdFor(Location::class);
-            $table->float('temperature', 2);
-            $table->float('humidity', 2);
+            $table->decimal('temperature', 5, 2);
+            $table->tinyInteger('humidity');
             $table->float('pressure', 2);
             $table->float('wind_speed', 2);
             $table->smallInteger('wind_direction');

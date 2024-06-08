@@ -99,6 +99,16 @@ const routes: Array<RouteRecordRaw> = [
 		},
 	},
 	{
+		path: '/admin/weather',
+		name: 'admin-weather',
+		component: () => import('@/pages/admin/WeatherPage.vue'),
+		meta: {
+			title: 'Weather',
+			requiresAuth: true,
+			roles: ['admin'],
+		},
+	},
+	{
 		path: '/:pathMatch(.*)*',
 		redirect() {
 			return '/';

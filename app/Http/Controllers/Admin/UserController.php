@@ -9,11 +9,14 @@ use Illuminate\Http\Request;
 
 class UserController
 {
-	public function index(): JsonResponse
+	public function index(Request $request): JsonResponse
 	{
-		$users = User::withoutRole('admin')->paginate();
+		$paginator = User::withoutRole('admin')->paginate($request->input('per_page', 10));
 
-		return response()->json(UserResource::collection($users));
+		return response()->json([
+			'data' => UserResource::collection($paginator),
+			'meta' => ['total' => $paginator->total()],
+		]);
 	}
 
 	public function create(Request $request): JsonResponse
@@ -26,7 +29,7 @@ class UserController
 
 		$user = User::create($data);
 
-		return response()->json($user, 201);
+		return response()->json(UserResource::make($user), 201);
 	}
 
 	public function update(Request $request, User $user): JsonResponse
@@ -39,7 +42,7 @@ class UserController
 
 		$user->update($data);
 
-		return response()->json($user);
+		return response()->json(UserResource::make($user));
 	}
 
 	public function delete(User $user): JsonResponse

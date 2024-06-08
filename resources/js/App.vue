@@ -34,6 +34,12 @@ const menuItems = [
 		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
   },
   {
+    label: 'Weather',
+    icon: 'cloud',
+    route: 'admin-weather',
+		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
+  },
+  {
     label: 'Login',
     icon: 'sign-in',
     route: 'login',
