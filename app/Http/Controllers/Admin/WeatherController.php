@@ -12,7 +12,16 @@ class WeatherController extends Controller
 {
 	public function index(Request $request): JsonResponse
 	{
-		$paginator = Weather::paginate($request->input('per_page', 10));
+		$query = Weather::query();
+
+		if ($request->has('sort_by')) {
+			$query->orderBy(
+				$request->input('sort_by'),
+				$request->input('sort_dir', 1) == 1 ? 'asc' : 'desc'
+			);
+		}
+
+		$paginator = $query->paginate($request->input('per_page', 10));
 
 		return response()->json([
 			'data' => WeatherResource::collection($paginator),

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import api from '@/plugins/api';
 import { format } from 'date-fns';
@@ -16,14 +16,23 @@ const weather = ref([]);
 const page = ref(1);
 const rowsPerPage = ref(10);
 const totalRecords = ref(0);
+const sortBy = ref('id');
+const sortDir = ref('desc');
+const abortController = ref<AbortController | null>(null);
 
 async function fetchWeather() {
 	isIndexLoading.value = true;
 
-	const { status, data } = await api.get(
-		'v1/admin/weather',
-		{ params: { page: page.value, per_page: rowsPerPage.value } },
-	);
+	if (abortController.value) {
+		abortController.value.abort();
+	}
+
+	abortController.value = new AbortController();
+
+	const { status, data, message } = await api.get('v1/admin/weather', {
+		params: { page: page.value, per_page: rowsPerPage.value, sort_by: sortBy.value, sort_dir: sortDir.value },
+		signal: abortController.value.signal,
+	});
 
 	if (status === 200) {
 		weather.value = data.data.map((weather) => ({
@@ -31,6 +40,8 @@ async function fetchWeather() {
 			forecasted_at: new Date(weather.forecasted_at),
 		}));
 		totalRecords.value = data.meta.total;
+	} else if (message === 'canceled') {
+		// Do nothing.
 	} else {
 		toast.add({
 			severity: 'error',
@@ -44,8 +55,6 @@ async function fetchWeather() {
 }
 
 fetchWeather();
-
-watch(page, fetchWeather);
 
 const editingRows = ref([]);
 
@@ -284,8 +293,10 @@ async function createWeather() {
 			data-key="id"
 			scrollable
 			scroll-height="68vh"
+			removable-sort
 			@row-edit-save="onRowEditSave"
-			@page="page = $event.page"
+			@page="page = $event.page; fetchWeather()"
+			@sort="sortBy = $event.sortField; sortDir = $event.sortOrder; fetchWeather()"
 		>
 			<template #header>
 				<Button @click="isCreateWeatherModalVisible = true">
@@ -295,9 +306,9 @@ async function createWeather() {
 				</Button>
 			</template>
 
-			<Column field="id" header="ID" />
+			<Column field="id" header="ID" sortable />
 
-			<Column field="location_id" header="Location">
+			<Column field="location_id" header="Location" sortable>
 				<template #body="{ data }">
 					{{ locationsStore.locations.find(l => l.id === data.location_id)?.name }}
 				</template>
@@ -313,25 +324,25 @@ async function createWeather() {
 				</template>
 			</Column>
 
-			<Column field="temperature" header="Temperature">
+			<Column field="temperature" header="Temperature" sortable>
 				<template #editor="{ data, field }">
 					<InputText v-model="data[field]" type="number" />
 				</template>
 			</Column>
 
-			<Column field="humidity" header="Humidity">
+			<Column field="humidity" header="Humidity" sortable>
 				<template #editor="{ data, field }">
 					<InputText v-model="data[field]" type="number" />
 				</template>
 			</Column>
 
-			<Column field="wind_speed" header="Wind speed">
+			<Column field="wind_speed" header="Wind speed" sortable>
 				<template #editor="{ data, field }">
 					<InputText v-model="data[field]" type="number" />
 				</template>
 			</Column>
 
-			<Column field="wind_direction" header="Wind direction">
+			<Column field="wind_direction" header="Wind direction" sortable>
 				<template #editor="{ data, field }">
 					<InputText
 						v-model="data[field]"
@@ -342,13 +353,13 @@ async function createWeather() {
 				</template>
 			</Column>
 
-			<Column field="pressure" header="Pressure">
+			<Column field="pressure" header="Pressure" sortable>
 				<template #editor="{ data, field }">
 					<InputText v-model="data[field]" type="number" />
 				</template>
 			</Column>
 
-			<Column field="forecasted_at" header="Forecasted">
+			<Column field="forecasted_at" header="Forecasted" sortable>
 				<template #body="{ data }">
 					{{ format(new Date(data.forecasted_at), 'yyyy-MM-dd HH:mm') }}
 				</template>
@@ -358,7 +369,7 @@ async function createWeather() {
 				</template>
 			</Column>
 
-			<Column field="type" header="Weather type">
+			<Column field="type" header="Weather type" sortable>
 				<template #body="{ data }">
 					<WeatherName :type="data.type" />
 				</template>

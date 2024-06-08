@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import api from '@/plugins/api';
 import { format } from 'date-fns';
@@ -12,18 +12,29 @@ const users = ref([]);
 const page = ref(1);
 const rowsPerPage = ref(10);
 const totalRecords = ref(0);
+const sortBy = ref('id');
+const sortDir = ref('desc');
+const abortController = ref<AbortController | null>(null);
 
 async function fetchUsers() {
 	isIndexLoading.value = true;
 
-	const { status, data } = await api.get(
-		'v1/admin/users',
-		{ params: { page: page.value, per_page: rowsPerPage.value } },
-	);
+	if (abortController.value) {
+		abortController.value.abort();
+	}
+
+	abortController.value = new AbortController();
+
+	const { status, data } = await api.get('v1/admin/users', {
+		params: { page: page.value, per_page: rowsPerPage.value, sort_by: sortBy.value, sort_dir: sortDir.value },
+		signal: abortController.value.signal,
+	});
 
 	if (status === 200) {
 		users.value = data.data;
 		totalRecords.value = data.meta.total;
+	} else if (message === 'canceled') {
+		// Do nothing.
 	} else {
 		toast.add({
 			severity: 'error',
@@ -37,8 +48,6 @@ async function fetchUsers() {
 }
 
 fetchUsers();
-
-watch(page, fetchUsers);
 
 const editingRows = ref([]);
 
@@ -202,7 +211,8 @@ async function createUser() {
 			scrollable
 			scroll-height="80vh"
 			@row-edit-save="onRowEditSave"
-			@page="page = $event.page"
+			@page="page = $event.page; fetchUsers()"
+			@sort="sortBy = $event.sortField; sortDir = $event.sortOrder; fetchUsers()"
 		>
 			<template #header>
 				<Button @click="isCreateUserModalVisible = true">
@@ -212,27 +222,27 @@ async function createUser() {
 				</Button>
 			</template>
 
-			<Column field="id" header="ID" />
+			<Column field="id" header="ID" sortable />
 
-			<Column field="name" header="Name">
+			<Column field="name" header="Name" sortable>
 				<template #editor="{ data, field }">
 					<InputText v-model="data[field]" />
 				</template>
 			</Column>
 
-			<Column field="email" header="Email">
+			<Column field="email" header="Email" sortable>
 				<template #editor="{ data, field }">
 					<InputText v-model="data[field]" />
 				</template>
 			</Column>
 
-			<Column field="created_at" header="Created">
+			<Column field="created_at" header="Created" sortable>
 				<template #body="{ data }">
 					{{ format(new Date(data.created_at), 'yyyy-MM-dd HH:mm') }}
 				</template>
 			</Column>
 
-			<Column field="is_email_verified" header="Email verified">
+			<Column field="is_email_verified" header="Email verified" sortable>
 				<template #body="{ data }">
 					<font-awesome-icon
 						:icon="data.is_email_verified ? 'check' : 'times'"
@@ -241,7 +251,7 @@ async function createUser() {
 				</template>
 			</Column>
 
-			<Column field="is_blocked" header="Blocked">
+			<Column field="is_blocked" header="Blocked" sortable>
 				<template #body="{ data }">
 					<font-awesome-icon
 						:icon="data.is_blocked ? 'check' : 'times'"
