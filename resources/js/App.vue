@@ -22,6 +22,12 @@ const menuItems = [
     route: 'index',
   },
   {
+    label: 'Dashboard',
+    icon: 'chart-line',
+    route: 'admin',
+		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
+  },
+  {
     label: 'Login',
     icon: 'sign-in',
     route: 'login',
@@ -55,15 +61,15 @@ const toggleDark = useToggle(isDark);
 
 <template>
 	<div class="size-full flex flex-col bg-white dark:bg-surface-900 text-surface-900 dark:text-surface-300">
-		<Menubar v-if="!router.currentRoute.value?.meta?.hideNavigation" :model="menuItems" class="m-2">
+		<Menubar v-if="!router.currentRoute.value?.meta?.hideNavigation" :model="menuItems" class="rounded-none">
 			<template #start>
-				<div class="mr-6 flex items-center gap-2 whitespace-nowrap">
+				<router-link to="/" class="mr-6 flex items-center gap-2 whitespace-nowrap">
 					<font-awesome-icon icon="sun" size="2xl" class="text-primary-500" />
 
 					<h1 class="text-xl font-bold text-surface-500 dark:text-white/80">
 						Weather Monitor
 					</h1>
-				</div>
+				</router-link>
 			</template>
 
 			<template #item="{ item }">
@@ -104,10 +110,10 @@ const toggleDark = useToggle(isDark);
 					v-tooltip="'Toggle theme'"
 					severity="secondary"
 					outlined
-					class="ml-2"
+					class="ml-2 size-8 p-0"
 					@click="toggleDark()"
 				>
-					<font-awesome-icon icon="circle-half-stroke" size="xl" />
+					<font-awesome-icon icon="circle-half-stroke" />
 				</Button>
 			</template>
 		</Menubar>

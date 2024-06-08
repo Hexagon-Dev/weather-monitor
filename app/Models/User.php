@@ -17,6 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
 
@@ -52,7 +53,10 @@ use Laravel\Sanctum\PersonalAccessToken;
  */
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory;
+	use Notifiable;
+	use HasApiTokens;
+	use HasRoles;
 
     /** @var array<int, string> */
     protected $fillable = [

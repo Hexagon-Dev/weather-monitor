@@ -42,7 +42,7 @@ const weatherByDays = computed<Array<WeatherDay>>(() => {
 			max: Math.max(...weatherToday.map(w => w.temperature)),
 			items: weatherToday,
 			type: mostWeatherCode,
-		};
+		} as WeatherDay;
 
 		return acc;
 	}, {} as Record<string, WeatherDay>)).slice(0, 7);
@@ -93,6 +93,8 @@ function selectDate(date: Date) {
 
 	selectedDate.value = newDate;
 }
+
+const smallerOrEqualMd = computed(() => smallerOrEqual('md').value);
 </script>
 
 <template>
@@ -125,7 +127,7 @@ function selectDate(date: Date) {
 
 				<p class="text-4xl font-bold">
 					{{ weatherNow.temperature }}°C
-					<WeatherIcon :type="weatherNow.type" class="ml-2" />
+					<WeatherIcon :type="weatherNow.type" :date="weatherNow.forecasted_at" class="ml-2" />
 				</p>
 
 				<p class="text-xl">
@@ -156,21 +158,25 @@ function selectDate(date: Date) {
 						{{ isToday(weatherDay.forecasted_at) ? 'Today' : format(weatherDay.forecasted_at, 'EEE') }}
 					</div>
 
-					<WeatherIcon :type="weatherDay.type" class="text-primary-500" size="lg" />
+					<WeatherIcon
+						:type="weatherDay.type"
+						class="text-primary-500"
+						size="lg"
+					/>
 
 					<p class="font-black w-12 flex-none">
-						{{ smallerOrEqual('md') ? weatherDay.max : weatherDay.min }}°C
+						{{ smallerOrEqualMd ? weatherDay.min : weatherDay.max }}°C
 					</p>
 
 					<TemperatureBar
-						:is-horizontal="smallerOrEqual('md').value"
+						:is-horizontal="smallerOrEqualMd"
 						:values="Object.values(weatherByDays)"
 						:min="weatherDay.min"
 						:max="weatherDay.max"
 					/>
 
 					<p class="font-black w-12 flex-none">
-						{{ smallerOrEqual('md') ? weatherDay.min : weatherDay.max }}°C
+						{{ smallerOrEqualMd ? weatherDay.max : weatherDay.min }}°C
 					</p>
 				</button>
 			</div>

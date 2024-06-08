@@ -29,4 +29,16 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Successfully updated.', 'user' => UserResource::make($user)]);
     }
+
+	public function deleteMe(Request $request): JsonResponse
+	{
+		/** @var User $user */
+		$user = auth()->user();
+
+		(new AuthController())->logout($request);
+
+		$user->delete();
+
+		return response()->json(['message' => 'Successfully deleted.']);
+	}
 }

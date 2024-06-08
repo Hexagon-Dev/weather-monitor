@@ -37,7 +37,12 @@ const weatherToday = computed<Weather[]>(() => {
 				{{ weather.temperature }}°C
 			</p>
 
-			<WeatherIcon :type="weather.type" class="text-primary-500" size="xl" />
+			<WeatherIcon
+				:type="weather.type"
+				:date="weather.forecasted_at"
+				class="text-primary-500"
+				size="xl"
+			/>
 			<WeatherName :type="weather.type" class="h-12" />
 
 			<p>

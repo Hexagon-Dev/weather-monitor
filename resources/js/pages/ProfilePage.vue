@@ -149,6 +149,40 @@ async function toggleFavourite(locationId: number) {
 
 	isToggleFavouriteLoading.value = false;
 }
+
+const isDeleteAccountLoading = ref(false);
+
+async function deleteAccount() {
+	if (!confirm('Are you sure you want to delete your account?')) {
+		return;
+	}
+
+	isDeleteAccountLoading.value = true;
+
+	const { status, data } = await api.delete('v1/users/me');
+
+	if (status === 200) {
+		toast.add({
+			severity: 'success',
+			summary: 'Success',
+			detail: data.message,
+			life: 3000,
+		});
+
+		userStore.user = null;
+
+		router.push({ name: 'index' });
+	} else {
+		toast.add({
+			severity: 'error',
+			summary: 'Error',
+			detail: data?.message ?? 'An error occurred. Please try again.',
+			life: 10000,
+		});
+	}
+
+	isDeleteAccountLoading.value = false;
+}
 </script>
 
 <template>
@@ -213,14 +247,21 @@ async function toggleFavourite(locationId: number) {
 							label="Send verification email"
 							outlined
 							:loading="isSendVerificationEmailLoading"
+							:disabled="isDeleteAccountLoading"
 							@click="sendVerificationEmail()"
 						/>
 						<Button
 							label="Change Password"
-							:disabled="isSendVerificationEmailLoading"
+							:disabled="isSendVerificationEmailLoading || isDeleteAccountLoading"
 							@click="isChangePasswordModalVisible = true"
 						/>
-						<Button label="Delete Account" severity="danger" :disabled="isSendVerificationEmailLoading" />
+						<Button
+							label="Delete Account"
+							severity="danger"
+							:disabled="isSendVerificationEmailLoading"
+							:loading="isDeleteAccountLoading"
+							@click="deleteAccount()"
+						/>
 					</div>
 				</div>
 			</div>
@@ -228,6 +269,13 @@ async function toggleFavourite(locationId: number) {
 
 		<Panel header="Recently viewed locations" class="md:w-auto w-full">
 			<div class="flex flex-col gap-2 overflow-y-auto max-h-96 h-96">
+				<div
+					v-if="userStore.user!.location_views.length === 0"
+					class="text-center h-full content-center text-surface-600 dark:text-surface-400"
+				>
+					No locations yet
+				</div>
+
 				<Button
 					v-for="locationId in userStore.user!.location_views"
 					:key="locationId"
@@ -240,6 +288,13 @@ async function toggleFavourite(locationId: number) {
 
 		<Panel header="Favourite locations" class="md:w-auto w-full">
 			<div class="flex flex-col gap-2 overflow-y-auto max-h-96 h-96">
+				<div
+					v-if="userStore.user!.favourite_locations.length === 0"
+					class="text-center h-full content-center text-surface-600 dark:text-surface-400"
+				>
+					No locations yet
+				</div>
+
 				<div
 					v-for="locationId in userStore.user!.favourite_locations"
 					:key="locationId"

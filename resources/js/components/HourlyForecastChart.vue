@@ -5,6 +5,7 @@ import echarts from '@/plugins/echarts';
 import { useLocationsStore } from '@/stores/locationsStore';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useEventListener } from '@vueuse/core';
 
 const props = defineProps<{
 	selectedLocation: Location;
@@ -20,11 +21,11 @@ onMounted(async () => {
 
 	const chart = echarts.init(document.getElementById('hourlyForecastChart'));
 
-	window.addEventListener('resize', () => chart.resize());
+	useEventListener(window, 'resize', () => chart.resize());
 
 	chart.setOption({
 		tooltip: { trigger: 'axis' },
-		legend: { data: ['Temperature', 'Humidity', 'Wind Speed', 'Pressure'], selected: { 'Pressure': false } },
+		legend: { data: ['Temperature', 'Humidity', 'Wind Speed', 'Pressure'] },
 		grid: {
 			left: '2%',
 			right: '4%',

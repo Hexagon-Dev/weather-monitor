@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import { WeatherCodeEnum } from '@/constants';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { computed } from 'vue';
 
-defineProps<{ type: WeatherCodeEnum | string }>();
+const props = defineProps<{ type: WeatherCodeEnum | string, date?: Date|string|undefined }>();
+
+const isDayTime = computed(() => {
+	if (!props.date) {
+		return true;
+	}
+
+	const hours = new Date(props.date).getHours();
+
+	return hours >= 6 && hours <= 20;
+});
 
 const iconsMap = {
-	[WeatherCodeEnum.CLEAR_SKY]: 'sun',
-	[WeatherCodeEnum.MAINLY_CLEAR]: 'cloud-sun',
-	[WeatherCodeEnum.PARTLY_CLOUDY]: 'cloud-sun',
+	[WeatherCodeEnum.CLEAR_SKY]: isDayTime.value ? 'sun' : 'moon',
+	[WeatherCodeEnum.MAINLY_CLEAR]: isDayTime.value ? 'cloud-sun' : 'cloud-moon',
+	[WeatherCodeEnum.PARTLY_CLOUDY]: isDayTime.value ? 'cloud-sun' : 'cloud-moon',
 	[WeatherCodeEnum.OVERCAST]: 'cloud',
 	[WeatherCodeEnum.FOG]: 'smog',
 	[WeatherCodeEnum.RIME_FOG]: 'smog',

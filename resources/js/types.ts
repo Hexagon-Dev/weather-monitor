@@ -4,6 +4,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+	roles: Array<string>;
   created_at: string;
   is_email_verified: boolean;
 	location_views: Array<number>;

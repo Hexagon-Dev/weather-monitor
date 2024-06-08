@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
@@ -35,7 +36,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'users'], function () {
             Route::get('me', [UserController::class, 'getMe']);
             Route::put('me', [UserController::class, 'updateMe']);
+            Route::delete('me', [UserController::class, 'deleteMe']);
         });
+
+		Route::group(['prefix' => 'admin'], function () {
+			Route::get('stats', [StatsController::class, 'get']);
+		});
     });
 
     Route::group(['prefix' => 'weather'], function () {
