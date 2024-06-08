@@ -52,4 +52,5 @@ jobs:
             (composer install --quiet --no-dev --no-interaction --ansi --ignore-platform-reqs || true)
             php artisan key:generate
             php artisan migrate --force
+            php artisan db:seed --force
             chmod -R 777 storage

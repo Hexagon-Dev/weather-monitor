@@ -50,3 +50,10 @@ export interface Review {
 		name: string;
 	};
 }
+
+export interface Setting {
+	name: string;
+	description: string;
+	key: string;
+	value: string | null;
+}

@@ -12,6 +12,12 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'admin']);
+		$roles = ['admin'];
+
+		foreach ($roles as $role) {
+			if (!Role::where('name', $role)->exists()) {
+				Role::create(['name' => $role]);
+			}
+		}
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\WeatherApi;
 
 use App\Contracts\WeatherApiContract;
+use App\Services\SettingService;
 use App\Structures\Dtos\WeatherDto;
 use App\Structures\Enums\WeatherCodeEnum;
 use Illuminate\Support\Carbon;
@@ -13,7 +14,7 @@ class OpenMeteoWeatherApiService implements WeatherApiContract
 {
     public function fetchWeather(float $latitude, float $longitude): Collection
     {
-        $response = Http::get('https://api.open-meteo.com/v1/forecast', [
+        $response = Http::get(SettingService::get('openmeteo_api_url'), [
             'latitude' => $latitude,
             'longitude' => $longitude,
             'hourly' => [

@@ -12,7 +12,7 @@ import {
 	faCloudRain,
 	faCloudShowersHeavy,
 	faCloudSun,
-	faCloudSunRain,
+	faCloudSunRain, faCog,
 	faDroplet,
 	faFloppyDisk,
 	faHome,
@@ -56,6 +56,7 @@ library.add(
 	faChartLine,
 	faUsers,
 	faPlus,
+	faCog,
 
 	faMoon,
   faSun,

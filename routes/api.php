@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\StatsController;
@@ -56,6 +57,11 @@ Route::group(['prefix' => 'v1'], function () {
 				Route::post('/', [AdminWeatherController::class, 'create']);
 				Route::put('{weather}', [AdminWeatherController::class, 'update']);
 				Route::delete('{weather}', [AdminWeatherController::class, 'delete']);
+			});
+
+			Route::group(['prefix' => 'settings'], function () {
+				Route::get('/', [SettingController::class, 'index']);
+				Route::post('/', [SettingController::class, 'update']);
 			});
 		});
     });

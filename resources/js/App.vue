@@ -40,6 +40,12 @@ const menuItems = [
 		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
   },
   {
+    label: 'Settings',
+    icon: 'cog',
+    route: 'admin-settings',
+		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
+  },
+  {
     label: 'Login',
     icon: 'sign-in',
     route: 'login',

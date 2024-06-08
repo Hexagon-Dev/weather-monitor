@@ -16,22 +16,26 @@ class DatabaseSeeder extends Seeder
     {
 		$this->call(RolesSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@mail.com',
-			'password' => 'password',
-			'email_verified_at' => now(),
-        ]);
+		if (!User::where('email', 'test@mail.com')->exists()) {
+			User::factory()->create([
+				'name' => 'Test User',
+				'email' => 'test@mail.com',
+				'password' => 'password',
+				'email_verified_at' => now(),
+			]);
+		}
 
-		$adminRole = Role::findByName('admin');
+		if (!User::where('email', 'admin@mail.com')->exists()) {
+			$adminRole = Role::findByName('admin');
 
-		$admin = User::factory()->create([
-			'name' => 'Admin User',
-			'email' => 'admin@mail.com',
-			'password' => 'password',
-			'email_verified_at' => now(),
-		]);
+			$admin = User::factory()->create([
+				'name' => 'Admin User',
+				'email' => 'admin@mail.com',
+				'password' => 'password',
+				'email_verified_at' => now(),
+			]);
 
-		$admin->assignRole($adminRole);
+			$admin->assignRole($adminRole);
+		}
     }
 }

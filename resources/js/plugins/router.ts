@@ -109,6 +109,16 @@ const routes: Array<RouteRecordRaw> = [
 		},
 	},
 	{
+		path: '/admin/settings',
+		name: 'admin-settings',
+		component: () => import('@/pages/admin/SettingsPage.vue'),
+		meta: {
+			title: 'Settings',
+			requiresAuth: true,
+			roles: ['admin'],
+		},
+	},
+	{
 		path: '/:pathMatch(.*)*',
 		redirect() {
 			return '/';

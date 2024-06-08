@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Location;
 use App\Services\LocationService;
+use App\Services\SettingService;
 use App\Structures\Enums\LocationTypeEnum;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -15,9 +16,11 @@ class FetchPlacesCommand extends Command
 
     protected $description = 'Fetches all Ukraine places from dovidnyk.in.ua and inserts them into the database.';
 
+	protected $dovidnykUrl = 'https://dovidnyk.in.ua/newtemp/koatuu/get_koatuu.php';
+
     public function handle(): void
     {
-        $places = Http::get('https://dovidnyk.in.ua/newtemp/koatuu/get_koatuu.php')->json();
+        $places = Http::get($this->dovidnykUrl)->json();
 
         foreach ($places as $place) {
             $location = Location::query()->where('code', $place['code'])->first();
@@ -41,12 +44,12 @@ class FetchPlacesCommand extends Command
             }
 
             if (isset($place['load_on_demand'])) {
-                $places = Http::get('https://dovidnyk.in.ua/newtemp/koatuu/get_koatuu.php', [
+                $places = Http::get($this->dovidnykUrl, [
                     'node' => $place['id'],
                     'level' => 1,
                 ])->json();
 
-                $cities = Http::get('https://dovidnyk.in.ua/newtemp/koatuu/get_koatuu.php', [
+                $cities = Http::get($this->dovidnykUrl, [
                     'node' => $places[0]['id'],
                     'level' => 2,
                 ])->json();
@@ -78,7 +81,10 @@ class FetchPlacesCommand extends Command
 
     function fetchCoordinates(string $name): array
     {
-        $coordinates = Http::get("https://geocode.maps.co/search?q=$name&api_key=" . env('GEOCODE_API_KEY'))->json();
+        $coordinates = Http::get("https://geocode.maps.co/search", [
+			'q' => $name,
+			'api_key' => SettingService::get('geocode_api_key'),
+		])->json();
 
         // Sleep for 1 second to avoid rate limiting.
         sleep(1);
