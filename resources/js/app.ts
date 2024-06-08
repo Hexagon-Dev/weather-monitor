@@ -6,6 +6,7 @@ import primeVue from 'primevue/config';
 import primeVueTheme from '@/plugins/primevue';
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
+import '@/plugins/echarts';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import '@/plugins/icons';

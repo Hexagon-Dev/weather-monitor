@@ -4,7 +4,7 @@ import {
 	faCaretDown,
 	faCaretUp,
 	faCheck,
-	faChevronLeft,
+	faChevronLeft, faCircleHalfStroke,
 	faCloud,
 	faCloudBolt,
 	faCloudMoon,
@@ -46,6 +46,7 @@ library.add(
 	faStar,
 	faSearch,
 	faTrash,
+	faCircleHalfStroke,
 
 	faMoon,
   faSun,

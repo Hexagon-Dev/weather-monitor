@@ -107,7 +107,7 @@ const toggleDark = useToggle(isDark);
 					class="ml-2"
 					@click="toggleDark()"
 				>
-					<font-awesome-icon :icon="isDark ? 'moon' : 'sun'" size="xl" />
+					<font-awesome-icon icon="circle-half-stroke" size="xl" />
 				</Button>
 			</template>
 		</Menubar>

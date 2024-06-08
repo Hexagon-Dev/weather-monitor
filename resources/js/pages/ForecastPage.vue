@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import router from '@/plugins/router';
 import { useLocationsStore } from '@/stores/locationsStore';
+import HourlyForecastChart from '@/components/HourlyForecastChart.vue';
 
 const locationsStore = useLocationsStore();
 
@@ -41,6 +42,8 @@ const selectedDate = ref<Date>(new Date());
 				<DailyForecastBlock v-model="selectedDate" :selected-location="location" />
 
 				<HourlyForecastBlock v-model="selectedDate" :selected-location="location" />
+
+				<HourlyForecastChart :selected-location="location" />
 
 				<ReviewsBlock :selected-location="location" />
 			</div>
