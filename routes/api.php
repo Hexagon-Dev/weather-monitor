@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\WeatherController as AdminWeatherController;
 use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,14 +35,28 @@ Route::group(['prefix' => 'v1'], function () {
                 ->name('verification.send');
         });
 
-        Route::group(['prefix' => 'users'], function () {
-            Route::get('me', [UserController::class, 'getMe']);
-            Route::put('me', [UserController::class, 'updateMe']);
-            Route::delete('me', [UserController::class, 'deleteMe']);
+        Route::group(['prefix' => 'users/me'], function () {
+            Route::get('/', [UserController::class, 'getMe']);
+            Route::put('/', [UserController::class, 'updateMe']);
+            Route::delete('/', [UserController::class, 'deleteMe']);
         });
 
-		Route::group(['prefix' => 'admin'], function () {
+		Route::group(['prefix' => 'admin', 'middleware' => 'role:admin'], function () {
 			Route::get('stats', [StatsController::class, 'get']);
+
+			Route::group(['prefix' => 'users'], function () {
+				Route::get('/', [AdminUserController::class, 'index']);
+				Route::post('/', [AdminUserController::class, 'create']);
+				Route::put('{user}', [AdminUserController::class, 'update']);
+				Route::delete('{user}', [AdminUserController::class, 'delete']);
+			});
+
+			Route::group(['prefix' => 'weather'], function () {
+				Route::get('/', [AdminWeatherController::class, 'index']);
+				Route::post('/', [AdminWeatherController::class, 'create']);
+				Route::put('{weather}', [AdminWeatherController::class, 'update']);
+				Route::delete('{weather}', [AdminWeatherController::class, 'delete']);
+			});
 		});
     });
 

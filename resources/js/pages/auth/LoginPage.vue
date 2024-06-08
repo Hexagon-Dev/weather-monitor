@@ -12,8 +12,8 @@ const toast = useToast();
 
 const isLoading = ref(false);
 const form = ref({
-  email: 'test@mail.com',
-  password: 'password',
+  email: '',
+  password: '',
   remember_me: false,
 });
 
@@ -73,6 +73,7 @@ async function login() {
 						name="remember_me"
 						value="Remember me"
 						:disabled="isLoading"
+						binary
 					/>
 					<label for="remember_me" class="ml-2">Remember me</label>
 				</div>

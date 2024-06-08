@@ -19,6 +19,7 @@ import {
 	faLocationArrow,
 	faMoon,
 	faPencil,
+	faPlus,
 	faSearch,
 	faSignIn,
 	faSignOut,
@@ -30,6 +31,7 @@ import {
 	faTrash,
 	faUser,
 	faUserPlus,
+	faUsers,
 	faWind,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -52,6 +54,8 @@ library.add(
 	faTrash,
 	faCircleHalfStroke,
 	faChartLine,
+	faUsers,
+	faPlus,
 
 	faMoon,
   faSun,

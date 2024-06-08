@@ -83,7 +83,17 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'admin',
 		component: () => import('@/pages/admin/IndexPage.vue'),
 		meta: {
-			title: 'Admin Dashboard',
+			title: 'Dashboard',
+			requiresAuth: true,
+			roles: ['admin'],
+		},
+	},
+	{
+		path: '/admin/users',
+		name: 'admin-users',
+		component: () => import('@/pages/admin/UsersPage.vue'),
+		meta: {
+			title: 'Users',
 			requiresAuth: true,
 			roles: ['admin'],
 		},
