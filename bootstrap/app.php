@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
+		$middleware->web([\Illuminate\Session\Middleware\StartSession::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -103,28 +103,39 @@ const filteredLocations = computed(() => {
 				<InputText v-model="search" placeholder="Search" />
 			</InputGroup>
 
-			<div class="flex flex-col gap-2 overflow-y-auto h-full">
-				<div v-for="location in filteredLocations" :key="location.id" class="flex gap-2">
-					<Button class="w-full" @click="router.push('/forecast/' + location.slug)">
-						<div>
-							{{ location.name }}
-						</div>
-					</Button>
-
-					<Button
-						v-if="userStore.user"
-						outlined
-						severity="secondary"
-						:loading="isLoading"
-						@click="toggleFavourite(location.id)"
-					>
-						<font-awesome-icon
-							icon="star"
-							:class="{ 'text-yellow-500': userStore.user.favourite_locations.includes(location.id) }"
-						/>
-					</Button>
+			<transition mode="out-in">
+				<div v-if="locationsStore.isLocationsLoading" class="h-full flex items-center justify-center">
+					<font-awesome-icon
+						icon="spinner"
+						spin
+						size="2xl"
+						class="text-primary-500"
+					/>
 				</div>
-			</div>
+
+				<div v-else class="flex flex-col gap-2 overflow-y-auto h-full">
+					<div v-for="location in filteredLocations" :key="location.id" class="flex gap-2">
+						<Button class="w-full" @click="router.push('/forecast/' + location.slug)">
+							<div>
+								{{ location.name }}
+							</div>
+						</Button>
+
+						<Button
+							v-if="userStore.user"
+							outlined
+							severity="secondary"
+							:loading="isLoading"
+							@click="toggleFavourite(location.id)"
+						>
+							<font-awesome-icon
+								icon="star"
+								:class="{ 'text-yellow-500': userStore.user.favourite_locations.includes(location.id) }"
+							/>
+						</Button>
+					</div>
+				</div>
+			</transition>
 		</div>
 	</div>
 </template>
