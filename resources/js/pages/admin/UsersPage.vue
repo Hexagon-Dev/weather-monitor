@@ -25,7 +25,7 @@ async function fetchUsers() {
 
 	abortController.value = new AbortController();
 
-	const { status, data } = await api.get('v1/admin/users', {
+	const { status, data, message } = await api.get('v1/admin/users', {
 		params: { page: page.value, per_page: rowsPerPage.value, sort_by: sortBy.value, sort_dir: sortDir.value },
 		signal: abortController.value.signal,
 	});
