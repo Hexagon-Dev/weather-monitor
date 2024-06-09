@@ -3,11 +3,15 @@ import { computed, ref, watch } from 'vue';
 import router from '@/plugins/router';
 import { useLocationsStore } from '@/stores/locationsStore';
 import HourlyForecastChart from '@/components/HourlyForecastChart.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faFacebook, faTelegram, faViber } from '@fortawesome/free-brands-svg-icons';
+import { faShare } from '@fortawesome/free-solid-svg-icons';
+import { useShare } from '@vueuse/core';
 
 const locationsStore = useLocationsStore();
 
 const location = computed(() => {
-  return locationsStore.locations.find((location) => location.slug === router.currentRoute.value.params.slug);
+	return locationsStore.locations.find((location) => location.slug === router.currentRoute.value.params.slug);
 });
 
 watch(location,() => {
@@ -17,6 +21,31 @@ watch(location,() => {
 }, { immediate: true });
 
 const selectedDate = ref<Date>(new Date());
+
+const shareTitle = computed(() => 'Checkout weather forecast on "Weather Monitor" for ' + location.value.name);
+
+const shareNetworks = computed(() => [
+	{
+		name: 'facebook',
+		url: `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}&quote=${shareTitle.value}`,
+		icon: faFacebook,
+	},
+	{
+		name: 'telegram',
+		url: `https://t.me/share/url?url=${window.location.href}&text=${shareTitle.value}`,
+		icon: faTelegram,
+	},
+]);
+
+const { share, isSupported } = useShare();
+
+function defaultShare() {
+	share({
+		title: 'Weather Monitor',
+		text: shareTitle.value,
+		url: window.location.href,
+	});
+}
 </script>
 
 <template>
@@ -31,13 +60,40 @@ const selectedDate = ref<Date>(new Date());
 			</div>
 
 			<div v-else class="size-full flex flex-col gap-4">
-				<h1 class="text-3xl font-bold">
-					{{ location.name }}
-				</h1>
+				<div class="flex justify-between gap-4 flex-wrap">
+					<div>
+						<h1 class="text-3xl font-bold">
+							{{ location.name }}
+						</h1>
 
-				<h2 class="text-surface-600 dark:text-surface-400">
-					Up to date hourly forecast for 7 days ahead for {{ location.name }}.
-				</h2>
+						<h2 class="text-surface-600 dark:text-surface-400">
+							Up to date hourly forecast for 7 days ahead for {{ location.name }}.
+						</h2>
+					</div>
+
+					<div class="flex gap-2 flex-wrap">
+						<Button
+							v-if="isSupported"
+							v-tooltip.top="'Share'"
+							class="size-10 p-0"
+							@click="defaultShare()"
+						>
+							<font-awesome-icon :icon="faShare" size="xl" />
+						</Button>
+
+						<a
+							v-for="network in shareNetworks"
+							:key="network.name"
+							v-tooltip.top="`Share on ${network.name}`"
+							:href="network.url"
+							target="_blank"
+						>
+							<Button class="size-10 p-0">
+								<font-awesome-icon :icon="network.icon" size="xl" />
+							</Button>
+						</a>
+					</div>
+				</div>
 
 				<DailyForecastBlock v-model="selectedDate" :selected-location="location" />
 
