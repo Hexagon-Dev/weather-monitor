@@ -4,7 +4,7 @@ import router from '@/plugins/router';
 import { useLocationsStore } from '@/stores/locationsStore';
 import HourlyForecastChart from '@/components/HourlyForecastChart.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faFacebook, faTelegram, faViber } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import { faShare } from '@fortawesome/free-solid-svg-icons';
 import { useShare } from '@vueuse/core';
 

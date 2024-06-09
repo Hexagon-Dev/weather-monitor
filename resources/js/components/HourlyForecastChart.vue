@@ -25,7 +25,11 @@ onMounted(async () => {
 
 	chart.setOption({
 		tooltip: { trigger: 'axis' },
-		legend: { data: ['Temperature', 'Humidity', 'Wind Speed', 'Pressure'] },
+		legend: {
+			data: ['Temperature', 'Humidity', 'Wind Speed', 'Pressure'],
+			// With pressure enabled - data is offset too much, so it is disabled by default.
+			selected: { 'Pressure': false },
+		},
 		grid: {
 			left: '2%',
 			right: '4%',
@@ -61,11 +65,6 @@ onMounted(async () => {
 				data: weather.value.map(w => w.pressure),
 			},
 		],
-	});
-
-	chart.dispatchAction({
-		type: 'unselect',
-		seriesName: 'Pressure',
 	});
 });
 </script>
