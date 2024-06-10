@@ -16,7 +16,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('login', [AuthController::class, 'login']);
 
         Route::get('email-verification/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-            ->middleware(['throttle:6,1'])
+            ->middleware('throttle:6,1')
             ->name('verification.verify');
 
         Route::post('forgot-password/send', [AuthController::class, 'sendResetPasswordEmail'])
@@ -68,6 +68,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['prefix' => 'weather'], function () {
         Route::get('{location}', [WeatherController::class, 'get']);
+        Route::get('{location}/export', [WeatherController::class, 'export'])->middleware('throttle:6,1');
     });
 
     Route::group(['prefix' => 'locations'], function () {

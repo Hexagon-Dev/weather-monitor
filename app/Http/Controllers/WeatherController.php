@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\WeatherExport;
 use App\Models\Location;
 use App\Models\User;
 use App\Services\WeatherService;
 use Illuminate\Http\JsonResponse;
+use Maatwebsite\Excel\Excel;
 
 class WeatherController extends Controller
 {
@@ -42,9 +44,19 @@ class WeatherController extends Controller
                 ->weather()
                 ->whereDate('forecasted_at', '>=', now()->startOfDay())
                 ->where('forecasted_at', '<=', now()->addDays(7)->endOfDay())
+				->orderBy('forecasted_at')
                 ->get();
         }
 
         return response()->json(['weather' => $weather]);
     }
+
+	public function export(Location $location): \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+	{
+		return (new WeatherExport($location))->download(
+			"weather_$location->slug.csv",
+			Excel::CSV,
+			['Content-Type' => 'text/csv'],
+		);
+	}
 }

@@ -5,10 +5,16 @@ import { useLocationsStore } from '@/stores/locationsStore';
 import HourlyForecastChart from '@/components/HourlyForecastChart.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faFacebook, faTelegram } from '@fortawesome/free-brands-svg-icons';
-import { faShare } from '@fortawesome/free-solid-svg-icons';
+import { faFileCsv, faShare } from '@fortawesome/free-solid-svg-icons';
 import { useShare } from '@vueuse/core';
+import { useUserStore } from '@/stores/userStore';
+import api from '@/plugins/api';
+import { useToast } from 'primevue/usetoast';
 
+const userStore = useUserStore();
 const locationsStore = useLocationsStore();
+
+const toast = useToast();
 
 const location = computed(() => {
 	return locationsStore.locations.find((location) => location.slug === router.currentRoute.value.params.slug);
@@ -46,6 +52,40 @@ function defaultShare() {
 		url: window.location.href,
 	});
 }
+
+const isExportWeatherLoading = ref(false);
+
+async function exportWeather() {
+	isExportWeatherLoading.value = true;
+
+	const { status, data } = await api.get(`v1/weather/${location.value.id}/export`);
+
+	if (status === 200) {
+		toast.add({
+			severity: 'success',
+			summary: 'Exported',
+			detail: 'Weather exported to CSV file.',
+			life: 3000,
+		});
+
+		const blob = new Blob([data], { type: 'text/csv' });
+		const url = window.URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${location.value.name}.csv`;
+		a.click();
+		window.URL.revokeObjectURL(url);
+	} else {
+		toast.add({
+			severity: 'error',
+			summary: 'Error',
+			detail: data?.message ?? 'Failed to export weather.',
+			life: 10000,
+		});
+	}
+
+	isExportWeatherLoading.value = false;
+}
 </script>
 
 <template>
@@ -72,6 +112,18 @@ function defaultShare() {
 					</div>
 
 					<div class="flex gap-2 flex-wrap">
+						<Button
+							v-tooltip.top="userStore.isAuthenticated ? 'Export to CSV' : 'Only for logged users'"
+							class="h-10 p-0 font-bold"
+							:disabled="!userStore.isAuthenticated"
+							:loading="isExportWeatherLoading"
+							@click="exportWeather()"
+						>
+							<font-awesome-icon :icon="faFileCsv" size="xl" class="mr-1" />
+
+							Export
+						</Button>
+
 						<Button
 							v-if="isSupported"
 							v-tooltip.top="'Share'"
