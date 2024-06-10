@@ -14,4 +14,12 @@ interface WeatherApiContract
      * @return Collection<WeatherDto>
      */
     public function fetchWeather(float $latitude, float $longitude): Collection;
+
+	/**
+	 * @param array $latitudes
+	 * @param array $longitudes
+	 *
+	 * @return Collection<Collection<WeatherDto>>
+	 */
+	function bulkFetchWeather(array $latitudes, array $longitudes): Collection;
 }

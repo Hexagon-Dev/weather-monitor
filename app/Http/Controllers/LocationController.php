@@ -6,14 +6,13 @@ use App\Http\Resources\ReviewResource;
 use App\Models\Location;
 use App\Models\Review;
 use App\Models\User;
-use App\Structures\Enums\LocationTypeEnum;
 use Illuminate\Http\JsonResponse;
 
 class LocationController extends Controller
 {
     public function index(): JsonResponse
 	{
-		$data = Location::where('type', LocationTypeEnum::REGION)
+		$data = Location::query()
 			->orderBy('name')
 			->get();
 

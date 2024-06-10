@@ -9,24 +9,16 @@ use Illuminate\Console\Command;
 
 class FetchWeatherCommand extends Command
 {
-    protected $signature = 'weather:fetch {location}';
+    protected $signature = 'weather:fetch';
 
     protected $description = 'Fetches and updates weather for location.';
 
     public function handle(WeatherApiContract $weatherApiService): void
     {
-        $locationArg = $this->argument('location');
+		Location::all()
+			->chunk(50)
+			->each(fn ($locations) => (new WeatherService($weatherApiService))->updateWeatherForLocations($locations));
 
-        $location = Location::query()
-            ->where('name', $locationArg)
-            ->orWhere('code', $locationArg)
-            ->orWhere('id', $locationArg)
-            ->first();
-
-        $service = new WeatherService($weatherApiService);
-
-        $service->updateWeather($location);
-
-        $this->info('Weather updated for ' . $location->name);
+        $this->info('Weather successfully fetched and updated.');
     }
 }

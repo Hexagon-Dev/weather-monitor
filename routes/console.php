@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use App\Jobs\UpdateWeatherJob;
 
 Schedule::command('auth:clear-resets')->everyThirtyMinutes();
+Schedule::job(new UpdateWeatherJob())->hourly();
