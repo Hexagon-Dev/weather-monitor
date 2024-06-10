@@ -91,11 +91,11 @@ async function exportWeather() {
 <template>
 	<div class="p-8">
 		<transition>
-			<div v-if="locationsStore.isLocationsLoading">
+			<div v-if="locationsStore.isLocationsLoading" class="size-full flex items-center justify-center">
 				Loading locations...
 			</div>
 
-			<div v-else-if="!location">
+			<div v-else-if="!location" class="size-full flex items-center justify-center">
 				Location not found
 			</div>
 
