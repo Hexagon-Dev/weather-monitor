@@ -4,8 +4,15 @@ import { computed } from 'vue';
 import { Weather, WeatherDay, Location } from '@/types';
 import { useLocationsStore } from '@/stores/locationsStore';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{ selectedLocation: Location | null }>();
+
+function t(key: string) {
+	const { t } = useI18n();
+
+	return t('components.daily-forecast-block.' + key);
+}
 
 const selectedDate = defineModel<Date>({ default: Date.now });
 
@@ -122,7 +129,7 @@ const smallerOrEqualMd = computed(() => smallerOrEqual('md').value);
 				</h2>
 
 				<p class="text-xl">
-					Weather now
+					{{ t('weather_now') }}
 				</p>
 
 				<p class="text-4xl font-bold">
@@ -155,7 +162,7 @@ const smallerOrEqualMd = computed(() => smallerOrEqual('md').value);
 					@click="selectDate(weatherDay.forecasted_at)"
 				>
 					<div class="md:w-auto w-11 flex-none">
-						{{ isToday(weatherDay.forecasted_at) ? 'Today' : format(weatherDay.forecasted_at, 'EEE') }}
+						{{ isToday(weatherDay.forecasted_at) ? t('today') : format(weatherDay.forecasted_at, 'EEE') }}
 					</div>
 
 					<WeatherIcon

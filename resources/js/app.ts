@@ -15,16 +15,33 @@ import router from '@/plugins/router';
 
 import '@/assets/css/app.css';
 
+import { createI18n } from 'vue-i18n';
+import * as en from '@/assets/lang/en.json';
+import * as uk from '@/assets/lang/uk.json';
+import * as ja from '@/assets/lang/ja.json';
+
 const app = createApp(App);
 
 const pinia = createPinia();
 
 pinia.use(piniaPluginPersistedState);
 
+const i18n = createI18n({
+	legacy: false, // you must set `false`, to use Composition API
+	locale: 'uk',
+	fallbackLocale: 'en',
+	messages: {
+		en,
+		uk,
+		ja,
+	},
+});
+
 app.use(pinia)
   .use(primeVue, { unstyled: true, pt: primeVueTheme })
   .use(ToastService)
   .use(router)
+	.use(i18n)
 	.directive('tooltip', Tooltip)
   .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app');

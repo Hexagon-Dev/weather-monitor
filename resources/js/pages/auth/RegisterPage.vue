@@ -5,6 +5,13 @@ import api from '@/plugins/api';
 import router from '@/plugins/router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useUserStore } from '@/stores/userStore';
+import { useI18n } from 'vue-i18n';
+
+const { t: trans } = useI18n();
+
+function t(key: string) {
+	return trans('pages.register.' + key);
+}
 
 const userStore = useUserStore();
 
@@ -26,7 +33,7 @@ async function register() {
   if (status === 201) {
     toast.add({
       severity: 'success',
-      summary: 'Success',
+      summary: trans('common.success'),
       detail: data.message,
       life: 3000,
     });
@@ -37,8 +44,8 @@ async function register() {
   } else {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: data?.message ?? 'An error occurred. Please try again.',
+      summary: trans('common.error'),
+      detail: data?.message ?? trans('common.request_failed'),
       life: 10000,
     });
   }
@@ -49,20 +56,20 @@ async function register() {
 
 <template>
 	<div class="size-full flex flex-col items-center justify-center gap-2">
-		<Panel header="Register">
+		<Panel :header="t('title')">
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col gap-2">
-					<label for="name">Name</label>
+					<label for="name">{{ t('name') }}</label>
 					<InputText id="name" v-model="form.name" :disabled="isLoading" />
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label for="email">Email</label>
+					<label for="email">{{ t('email') }}</label>
 					<InputText id="email" v-model="form.email" :disabled="isLoading" />
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label for="password">Password</label>
+					<label for="password">{{ t('password') }}</label>
 					<Password
 						id="password"
 						v-model="form.password"
@@ -72,7 +79,7 @@ async function register() {
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label for="passwordConfirmation">Password confirmation</label>
+					<label for="passwordConfirmation">{{ t('password_confirm') }}</label>
 					<Password
 						id="passwordConfirmation"
 						v-model="form.password_confirmation"
@@ -85,19 +92,19 @@ async function register() {
 				<div class="flex gap-2">
 					<Button class="grow" severity="secondary" @click="router.back()">
 						<font-awesome-icon icon="chevron-left" class="mr-2" />
-						Back
+						{{ trans('common.back') }}
 					</Button>
 
 					<Button
 						class="grow"
-						label="Register"
+						:label="t('register')"
 						:loading="isLoading"
 						@click="register"
 					/>
 				</div>
 
 				<router-link to="login" class="hover:underline text-center">
-					Already registered?
+					{{ t('already_account') }}
 				</router-link>
 			</div>
 		</Panel>

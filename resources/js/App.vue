@@ -5,6 +5,9 @@ import router from '@/plugins/router';
 import { useLocationsStore } from '@/stores/locationsStore';
 import { useDark, useToggle } from '@vueuse/core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const userStore = useUserStore();
 const locationsStore = useLocationsStore();
@@ -12,69 +15,71 @@ const locationsStore = useLocationsStore();
 locationsStore.fetchLocations();
 
 if (userStore.isAuthenticated) {
-  userStore.fetchMe();
+	userStore.fetchMe();
 }
 
 const menuItems = [
-  {
-    label: 'Home',
-    icon: 'home',
-    route: 'index',
-  },
-  {
-    label: 'Dashboard',
-    icon: 'chart-line',
-    route: 'admin',
+	{
+		label: 'nav.home',
+		icon: 'home',
+		route: 'index',
+	},
+	{
+		label: 'nav.dashboard',
+		icon: 'chart-line',
+		route: 'admin',
 		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
-  },
-  {
-    label: 'Users',
-    icon: 'users',
-    route: 'admin-users',
+	},
+	{
+		label: 'nav.users',
+		icon: 'users',
+		route: 'admin-users',
 		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
-  },
-  {
-    label: 'Weather',
-    icon: 'cloud',
-    route: 'admin-weather',
+	},
+	{
+		label: 'nav.weather',
+		icon: 'cloud',
+		route: 'admin-weather',
 		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
-  },
-  {
-    label: 'Settings',
-    icon: 'cog',
-    route: 'admin-settings',
+	},
+	{
+		label: 'nav.settings',
+		icon: 'cog',
+		route: 'admin-settings',
 		visible: () => userStore.isAuthenticated && userStore.user!.roles.includes('admin'),
-  },
-  {
-    label: 'Login',
-    icon: 'sign-in',
-    route: 'login',
-    visible: () => !userStore.isAuthenticated,
-    class: 'md:ml-auto ml-0',
-  },
-  {
-    label: 'Register',
-    icon: 'user-plus',
-    route: 'register',
-    visible: () => !userStore.isAuthenticated,
-  },
-  {
-    label: 'Profile',
-    icon: 'user',
-    route: 'profile',
-    visible: () => userStore.isAuthenticated,
-    class: 'md:ml-auto ml-0',
-  },
-  {
-    label: 'Logout',
-    icon: 'sign-out',
-    route: 'logout',
-    visible: () => userStore.isAuthenticated,
-  },
+	},
+	{
+		label: 'nav.login',
+		icon: 'sign-in',
+		route: 'login',
+		visible: () => !userStore.isAuthenticated,
+		class: 'md:ml-auto ml-0',
+	},
+	{
+		label: 'nav.register',
+		icon: 'user-plus',
+		route: 'register',
+		visible: () => !userStore.isAuthenticated,
+	},
+	{
+		label: 'nav.profile',
+		icon: 'user',
+		route: 'profile',
+		visible: () => userStore.isAuthenticated,
+		class: 'md:ml-auto ml-0',
+	},
+	{
+		label: 'nav.logout',
+		icon: 'sign-out',
+		route: 'logout',
+		visible: () => userStore.isAuthenticated,
+	},
 ];
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+
+const { locale } = useI18n();
 </script>
 
 <template>
@@ -107,7 +112,7 @@ const toggleDark = useToggle(isDark);
 						@click="navigate"
 					>
 						<font-awesome-icon :icon="item.icon" />
-						<span class="ml-2">{{ item.label }}</span>
+						<span class="ml-2">{{ t(item.label) }}</span>
 					</a>
 				</router-link>
 
@@ -118,21 +123,52 @@ const toggleDark = useToggle(isDark);
 					:target="item.target"
 				>
 					<font-awesome-icon :icon="item.icon" />
-					<span class="ml-2">{{ item.label }}</span>
+					<span class="ml-2">{{ t(item.label) }}</span>
 				</a>
 			</template>
 
 			<template #end>
-				<Button
-					v-model="isDark"
-					v-tooltip="'Toggle theme'"
-					severity="secondary"
-					outlined
-					class="ml-2 size-8 p-0"
-					@click="toggleDark()"
-				>
-					<font-awesome-icon icon="circle-half-stroke" />
-				</Button>
+				<div class="flex gap-2 items-center ml-2">
+					<Dropdown v-model="locale" :options="['en', 'uk', 'ja']">
+						<template #value="slotProps">
+							<div v-if="slotProps.value" class="flex align-items-center">
+								<img
+									:alt="slotProps.value"
+									:src="`images/lang/${slotProps.value}.svg`"
+									class="mr-1 w-4"
+								>
+								<div class="w-6">
+									{{ slotProps.value }}
+								</div>
+							</div>
+							<span v-else>
+								{{ slotProps.placeholder }}
+							</span>
+						</template>
+
+						<template #option="slotProps">
+							<div class="flex align-items-center">
+								<img
+									:alt="slotProps.option"
+									:src="`images/lang/${slotProps.option}.svg`"
+									class="mr-2 w-4"
+								>
+								<div>{{ slotProps.option }}</div>
+							</div>
+						</template>
+					</Dropdown>
+
+					<Button
+						v-model="isDark"
+						v-tooltip="t('common.toggle_theme')"
+						severity="secondary"
+						outlined
+						class="size-8 p-0"
+						@click="toggleDark()"
+					>
+						<font-awesome-icon icon="circle-half-stroke" />
+					</Button>
+				</div>
 			</template>
 		</Menubar>
 

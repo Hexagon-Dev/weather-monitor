@@ -6,6 +6,13 @@ import api from '@/plugins/api';
 import { useToast } from 'primevue/usetoast';
 import { useLocationsStore } from '@/stores/locationsStore';
 import router from '@/plugins/router';
+import { useI18n } from 'vue-i18n';
+
+const { t: trans } = useI18n();
+
+function t(key: string) {
+	return trans('pages.profile.' + key);
+}
 
 const userStore = useUserStore();
 const locationsStore = useLocationsStore();
@@ -32,7 +39,7 @@ async function updateUser() {
   if (status === 200) {
     toast.add({
       severity: 'success',
-      summary: 'Success',
+      summary: trans('common.success'),
       detail: data.message,
       life: 3000,
     });
@@ -41,8 +48,8 @@ async function updateUser() {
   } else {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: data?.message ?? 'An error occurred. Please try again.',
+      summary: trans('common.error'),
+      detail: data?.message ?? trans('common.request_failed'),
       life: 10000,
     });
   }
@@ -61,15 +68,15 @@ async function sendVerificationEmail() {
   if (status === 200) {
     toast.add({
       severity: 'success',
-      summary: 'Success',
+      summary: trans('common.success'),
       detail: data.message,
       life: 3000,
     });
   } else {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: data?.message ?? 'An error occurred. Please try again.',
+      summary: trans('common.error'),
+      detail: data?.message ?? trans('common.request_failed'),
       life: 10000,
     });
   }
@@ -101,7 +108,7 @@ async function changePassword() {
   if (status === 200) {
     toast.add({
       severity: 'success',
-      summary: 'Success',
+      summary: trans('common.success'),
       detail: data.message,
       life: 3000,
     });
@@ -110,8 +117,8 @@ async function changePassword() {
   } else {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: data?.message ?? 'An error occurred. Please try again.',
+      summary: trans('common.error'),
+      detail: data?.message ?? trans('common.request_failed'),
       life: 10000,
     });
   }
@@ -141,8 +148,8 @@ async function toggleFavourite(locationId: number) {
 	if (status !== 200) {
 		toast.add({
 			severity: 'error',
-			summary: 'Error',
-			detail: data?.message ?? 'An error occurred. Please try again.',
+			summary: trans('common.error'),
+			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
 	}
@@ -153,7 +160,7 @@ async function toggleFavourite(locationId: number) {
 const isDeleteAccountLoading = ref(false);
 
 async function deleteAccount() {
-	if (!confirm('Are you sure you want to delete your account?')) {
+	if (!confirm(t('delete_account_confirm'))) {
 		return;
 	}
 
@@ -164,7 +171,7 @@ async function deleteAccount() {
 	if (status === 200) {
 		toast.add({
 			severity: 'success',
-			summary: 'Success',
+			summary: trans('common.success'),
 			detail: data.message,
 			life: 3000,
 		});
@@ -175,8 +182,8 @@ async function deleteAccount() {
 	} else {
 		toast.add({
 			severity: 'error',
-			summary: 'Error',
-			detail: data?.message ?? 'An error occurred. Please try again.',
+			summary: trans('common.error'),
+			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
 	}
@@ -187,24 +194,24 @@ async function deleteAccount() {
 
 <template>
 	<div class="size-full flex flex-wrap gap-4 items-center justify-center overflow-y-auto p-4">
-		<Panel header="Profile" class="md:w-auto w-full">
+		<Panel :header="t('title')" class="md:w-auto w-full">
 			<div class="flex md:flex-row flex-col gap-8 md:h-96 h-auto">
 				<div>
 					<div class="flex flex-col gap-4">
 						<div class="flex flex-col gap-2">
-							<label for="name">Name</label>
+							<label for="name">{{ t('name') }}</label>
 							<InputText id="name" v-model="form.name" :disabled="!isEditMode || isLoading" />
 						</div>
 
 						<div class="flex flex-col gap-2">
-							<label for="email">Email</label>
+							<label for="email">{{ t('email') }}</label>
 							<InputText id="email" v-model="form.email" :disabled="!isEditMode || isLoading" />
 						</div>
 
 						<div class="flex gap-2">
 							<Button v-if="!isEditMode" @click="isEditMode = true">
 								<font-awesome-icon icon="pencil" class="mr-2" />
-								Edit
+								{{ trans('common.edit') }}
 							</Button>
 
 							<template v-else>
@@ -215,12 +222,12 @@ async function deleteAccount() {
 									@click="isEditMode = false"
 								>
 									<font-awesome-icon icon="times" class="mr-2" />
-									Cancel
+									{{ trans('common.cancel') }}
 								</Button>
 
 								<Button class="grow" :loading="isLoading" @click="updateUser()">
 									<font-awesome-icon icon="floppy-disk" class="mr-2" />
-									Save
+									{{ trans('common.save') }}
 								</Button>
 							</template>
 						</div>
@@ -230,12 +237,12 @@ async function deleteAccount() {
 				<div>
 					<div class="flex flex-col gap-2">
 						<div class="flex flex-col">
-							<label for="email">Registered at:</label>
+							<label for="email">{{ t('registered_at') }}:</label>
 							<p>{{ userStore.user!.created_at.slice(0, 19).replace('T', ' ') }}</p>
 						</div>
 
 						<div class="flex items-center gap-1">
-							Is email verified:
+							{{ t('is_email_verified') }}:
 							<font-awesome-icon
 								:icon="userStore.user!.is_email_verified ? 'check' : 'times'"
 								:class="userStore.user!.is_email_verified ? 'text-green-500' : 'text-red-500'"
@@ -244,19 +251,19 @@ async function deleteAccount() {
 
 						<Button
 							v-if="!userStore.user!.is_email_verified"
-							label="Send verification email"
+							:label="t('send_verification_email')"
 							outlined
 							:loading="isSendVerificationEmailLoading"
 							:disabled="isDeleteAccountLoading"
 							@click="sendVerificationEmail()"
 						/>
 						<Button
-							label="Change Password"
+							:label="t('change_password')"
 							:disabled="isSendVerificationEmailLoading || isDeleteAccountLoading"
 							@click="isChangePasswordModalVisible = true"
 						/>
 						<Button
-							label="Delete Account"
+							:label="t('delete_account')"
 							severity="danger"
 							:disabled="isSendVerificationEmailLoading"
 							:loading="isDeleteAccountLoading"
@@ -267,13 +274,13 @@ async function deleteAccount() {
 			</div>
 		</Panel>
 
-		<Panel header="Recently viewed locations" class="md:w-auto w-full">
+		<Panel :header="t('recent_locations')" class="md:w-auto w-full">
 			<div class="flex flex-col gap-2 overflow-y-auto max-h-96 h-96">
 				<div
 					v-if="userStore.user!.location_views.length === 0"
 					class="text-center h-full content-center text-surface-600 dark:text-surface-400"
 				>
-					No locations yet
+					{{ t('no_locations') }}
 				</div>
 
 				<Button
@@ -286,13 +293,13 @@ async function deleteAccount() {
 			</div>
 		</Panel>
 
-		<Panel header="Favourite locations" class="md:w-auto w-full">
+		<Panel :header="t('favourite_locations')" class="md:w-auto w-full">
 			<div class="flex flex-col gap-2 overflow-y-auto max-h-96 h-96">
 				<div
 					v-if="userStore.user!.favourite_locations.length === 0"
 					class="text-center h-full content-center text-surface-600 dark:text-surface-400"
 				>
-					No locations yet
+					{{ t('no_locations') }}
 				</div>
 
 				<div
@@ -323,7 +330,7 @@ async function deleteAccount() {
 		>
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col gap-2">
-					<label for="currentPassword">Current password</label>
+					<label for="currentPassword">{{ t('current_password') }}</label>
 					<Password
 						id="currentPassword"
 						v-model="changePasswordForm.current_password"
@@ -334,7 +341,7 @@ async function deleteAccount() {
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label for="newPassword">New password</label>
+					<label for="newPassword">{{ t('new_password') }}</label>
 					<Password
 						id="newPassword"
 						v-model="changePasswordForm.new_password"
@@ -344,7 +351,7 @@ async function deleteAccount() {
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label for="passwordConfirmation">New password confirmation</label>
+					<label for="passwordConfirmation">{{ t('new_password_confirm') }}</label>
 					<Password
 						id="passwordConfirmation"
 						v-model="changePasswordForm.new_password_confirmation"
@@ -357,11 +364,11 @@ async function deleteAccount() {
 				<div class="flex justify-end gap-2">
 					<Button
 						type="button"
-						label="Cancel"
+						:label="trans('common.cancel')"
 						severity="secondary"
 						@click="closeChangePasswordModal()"
 					/>
-					<Button type="button" label="Save" @click="changePassword()" />
+					<Button type="button" :label="trans('common.save')" @click="changePassword()" />
 				</div>
 			</div>
 		</Dialog>

@@ -3,6 +3,13 @@ import { ref } from 'vue';
 import api from '@/plugins/api';
 import { useToast } from 'primevue/usetoast';
 import router from '@/plugins/router';
+import { useI18n } from 'vue-i18n';
+
+const { t: trans } = useI18n();
+
+function t(key: string) {
+	return trans('pages.forgot-password.' + key);
+}
 
 const toast = useToast();
 
@@ -17,7 +24,7 @@ async function sendResetLink() {
   if (status === 200) {
     toast.add({
       severity: 'success',
-      summary: 'Success',
+      summary: trans('common.success'),
       detail: data.message,
       life: 3000,
     });
@@ -26,8 +33,8 @@ async function sendResetLink() {
   } else {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: data?.message ?? 'An error occurred. Please try again.',
+      summary: trans('common.error'),
+      detail: data?.message ?? trans('common.request_failed'),
       life: 10000,
     });
   }
@@ -38,10 +45,10 @@ async function sendResetLink() {
 
 <template>
 	<div class="size-full flex items-center justify-center">
-		<Panel header="Forgot password">
+		<Panel :header="t('title')">
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col gap-2">
-					<label for="email">Email</label>
+					<label for="email">{{ t('email') }}</label>
 					<InputText
 						id="email"
 						v-model="email"
@@ -49,7 +56,7 @@ async function sendResetLink() {
 					/>
 				</div>
 
-				<Button type="button" label="Send reset link" @click="sendResetLink()" />
+				<Button type="button" :label="t('send_reset_link')" @click="sendResetLink()" />
 			</div>
 		</Panel>
 	</div>

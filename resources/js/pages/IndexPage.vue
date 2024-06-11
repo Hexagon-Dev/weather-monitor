@@ -9,6 +9,13 @@ import { useToast } from 'primevue/usetoast';
 import { computed, ref } from 'vue';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
+import { useI18n } from 'vue-i18n';
+
+const { t: trans } = useI18n();
+
+function t(key: string) {
+	return trans('pages.index.' + key);
+}
 
 const locationsStore = useLocationsStore();
 const userStore = useUserStore();
@@ -37,8 +44,8 @@ async function toggleFavourite(locationId: number) {
 	if (status !== 200) {
 		toast.add({
 			severity: 'error',
-			summary: 'Error',
-			detail: data?.message ?? 'An error occurred. Please try again.',
+			summary: trans('common.error'),
+			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
 	}
@@ -89,18 +96,18 @@ const filteredLocations = computed(() => {
 
 		<div class="card flex flex-col gap-2 lg:w-1/3 w-auto">
 			<h2 class="text-2xl font-bold">
-				Welcome To Weather Monitor
+				{{ t('welcome') }}
 			</h2>
 
 			<h2 class="text-surface-600 dark:text-surface-400">
-				Please, select location, enter location name or coordinates divided by comma:
+				{{ t('select_location') }}
 			</h2>
 
 			<InputGroup>
 				<InputGroupAddon>
 					<font-awesome-icon icon="search" />
 				</InputGroupAddon>
-				<InputText v-model="search" placeholder="Search" />
+				<InputText v-model="search" :placeholder="t('search')" />
 			</InputGroup>
 
 			<transition mode="out-in">
@@ -123,6 +130,7 @@ const filteredLocations = computed(() => {
 
 						<Button
 							v-if="userStore.user"
+							v-tooltip="t('add_to_favorites')"
 							outlined
 							severity="secondary"
 							:loading="isLoading"

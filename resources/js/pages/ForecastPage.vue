@@ -10,6 +10,13 @@ import { useShare } from '@vueuse/core';
 import { useUserStore } from '@/stores/userStore';
 import api from '@/plugins/api';
 import { useToast } from 'primevue/usetoast';
+import { useI18n } from 'vue-i18n';
+
+const { t: trans } = useI18n();
+
+function t(key: string) {
+	return trans('pages.forecast.' + key);
+}
 
 const userStore = useUserStore();
 const locationsStore = useLocationsStore();
@@ -28,7 +35,7 @@ watch(location,() => {
 
 const selectedDate = ref<Date>(new Date());
 
-const shareTitle = computed(() => 'Checkout weather forecast on "Weather Monitor" for ' + location.value.name);
+const shareTitle = computed(() => t('share_title') + location.value.name);
 
 const shareNetworks = computed(() => [
 	{
@@ -63,8 +70,8 @@ async function exportWeather() {
 	if (status === 200) {
 		toast.add({
 			severity: 'success',
-			summary: 'Exported',
-			detail: 'Weather exported to CSV file.',
+			summary: trans('common.success'),
+			detail: t('csv_exported'),
 			life: 3000,
 		});
 
@@ -78,8 +85,8 @@ async function exportWeather() {
 	} else {
 		toast.add({
 			severity: 'error',
-			summary: 'Error',
-			detail: data?.message ?? 'Failed to export weather.',
+			summary: trans('common.error'),
+			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
 	}
@@ -92,11 +99,11 @@ async function exportWeather() {
 	<div class="p-8">
 		<transition>
 			<div v-if="locationsStore.isLocationsLoading" class="size-full flex items-center justify-center">
-				Loading locations...
+				{{ t('loading_locations') }}
 			</div>
 
 			<div v-else-if="!location" class="size-full flex items-center justify-center">
-				Location not found
+				{{ t('location_not_found') }}
 			</div>
 
 			<div v-else class="size-full flex flex-col gap-4">
@@ -107,13 +114,13 @@ async function exportWeather() {
 						</h1>
 
 						<h2 class="text-surface-600 dark:text-surface-400">
-							Up to date hourly forecast for 7 days ahead for {{ location.name }}.
+							{{ t('forecast_for') }} {{ location.name }}.
 						</h2>
 					</div>
 
 					<div class="flex gap-2 flex-wrap">
 						<Button
-							v-tooltip.top="userStore.isAuthenticated ? 'Export to CSV' : 'Only for logged users'"
+							v-tooltip.top="t(userStore.isAuthenticated ? 'export_to_csv' : 'only_auth')"
 							class="h-10 p-0 font-bold"
 							:disabled="!userStore.isAuthenticated"
 							:loading="isExportWeatherLoading"
@@ -121,12 +128,12 @@ async function exportWeather() {
 						>
 							<font-awesome-icon :icon="faFileCsv" size="xl" class="mr-1" />
 
-							Export
+							{{ t('export') }}
 						</Button>
 
 						<Button
 							v-if="isSupported"
-							v-tooltip.top="'Share'"
+							v-tooltip.top="t('share')"
 							class="size-10 p-0"
 							@click="defaultShare()"
 						>
@@ -136,7 +143,7 @@ async function exportWeather() {
 						<a
 							v-for="network in shareNetworks"
 							:key="network.name"
-							v-tooltip.top="`Share on ${network.name}`"
+							v-tooltip.top="t('share_on') + ' ' + network.name"
 							:href="network.url"
 							target="_blank"
 						>

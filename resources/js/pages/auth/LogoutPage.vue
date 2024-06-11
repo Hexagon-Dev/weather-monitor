@@ -4,6 +4,13 @@ import api from '@/plugins/api';
 import { useUserStore } from '@/stores/userStore';
 import router from '@/plugins/router';
 import { useToast } from 'primevue/usetoast';
+import { useI18n } from 'vue-i18n';
+
+const { t: trans } = useI18n();
+
+function t(key: string) {
+	return trans('pages.logout.' + key);
+}
 
 const userStore = useUserStore();
 
@@ -23,15 +30,15 @@ async function logout() {
 
     toast.add({
       severity: 'success',
-      summary: 'Success',
+      summary: trans('common.success'),
       detail: data.message,
       life: 3000,
     });
   } else {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: data?.message ?? 'An error occurred. Please try again.',
+      summary: trans('common.error'),
+      detail: data?.message ?? trans('common.request_failed'),
       life: 10000,
     });
   }
@@ -42,7 +49,7 @@ logout();
 
 <template>
 	<div class="size-full flex items-center justify-center">
-		<Panel header="Logging out">
+		<Panel :header="t('title')">
 			<div class="flex items-center justify-center py-10 px-12">
 				<font-awesome-icon icon="spinner" spin size="2xl" />
 			</div>

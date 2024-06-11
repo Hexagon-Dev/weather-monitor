@@ -5,10 +5,17 @@ import api from '@/plugins/api';
 import { useToast } from 'primevue/usetoast';
 import { useUserStore } from '@/stores/userStore';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	selectedLocation: Location;
 }>();
+
+const { t: trans } = useI18n();
+
+function t(key: string) {
+	return trans('components.reviews-block.' + key);
+}
 
 const userStore = useUserStore();
 
@@ -29,7 +36,7 @@ async function fetchReviews() {
 		toast.add({
 			severity: 'error',
 			summary: 'Error',
-			detail: data?.message ?? 'Failed to load reviews. Please try again.',
+			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
 	}
@@ -53,7 +60,7 @@ async function submitComment() {
 		toast.add({
 			severity: 'success',
 			summary: 'Success',
-			detail: 'Review has been added successfully.',
+			detail: t('review_added'),
 			life: 3000,
 		});
 
@@ -63,7 +70,7 @@ async function submitComment() {
 		toast.add({
 			severity: 'error',
 			summary: 'Error',
-			detail: data?.message ?? 'Failed to add review. Please try again.',
+			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
 	}
@@ -82,7 +89,7 @@ async function deleteReview(reviewId: number) {
 		toast.add({
 			severity: 'success',
 			summary: 'Success',
-			detail: 'Review has been deleted successfully.',
+			detail: t('review_deleted'),
 			life: 3000,
 		});
 
@@ -91,7 +98,7 @@ async function deleteReview(reviewId: number) {
 		toast.add({
 			severity: 'error',
 			summary: 'Error',
-			detail: data?.message ?? 'Failed to delete review. Please try again.',
+			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
 	}
@@ -103,20 +110,20 @@ async function deleteReview(reviewId: number) {
 <template>
 	<div>
 		<p class="text-xl font-bold mb-4">
-			Reviews
+			{{ t('reviews') }}
 		</p>
 
 		<div class="card flex flex-col gap-4 mb-4">
-			<p>Add new review for {{ selectedLocation.name }}</p>
+			<p>{{ t('add_review_for') }} {{ selectedLocation.name }}</p>
 
 			<InputText
 				v-model="comment"
 				:disabled="!userStore.isAuthenticated || isSubmitCommentLoading"
-				:placeholder="userStore.isAuthenticated ? 'Comment' : 'Please sign in to have an ability to add reviews'"
+				:placeholder="t(userStore.isAuthenticated ? 'comment' : 'please_auth')"
 			/>
 
 			<Button
-				label="Submit"
+				:label="t('submit')"
 				class="w-fit"
 				:disabled="!userStore.isAuthenticated"
 				:loading="isSubmitCommentLoading"
@@ -135,7 +142,7 @@ async function deleteReview(reviewId: number) {
 			</div>
 
 			<div v-else-if="!reviews.length" class="card text-center text-surface-600 dark:text-surface-400">
-				No reviews yet
+				{{ t('no_reviews') }}
 			</div>
 
 			<div v-for="review in reviews" :key="review.id" class="card flex flex-col gap-4">

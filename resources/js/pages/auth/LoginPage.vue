@@ -5,6 +5,13 @@ import { useToast } from 'primevue/usetoast';
 import router from '@/plugins/router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useUserStore } from '@/stores/userStore';
+import { useI18n } from 'vue-i18n';
+
+const { t: trans } = useI18n();
+
+function t(key: string) {
+	return trans('pages.login.' + key);
+}
 
 const userStore = useUserStore();
 
@@ -25,7 +32,7 @@ async function login() {
   if (status === 200) {
     toast.add({
       severity: 'success',
-      summary: 'Success',
+      summary: trans('common.success'),
       detail: data.message,
       life: 3000,
     });
@@ -36,8 +43,8 @@ async function login() {
   } else {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: data?.message ?? 'An error occurred. Please try again.',
+      summary: trans('common.error'),
+      detail: data?.message ?? trans('common.request_failed'),
       life: 10000,
     });
   }
@@ -48,15 +55,15 @@ async function login() {
 
 <template>
 	<div class="size-full flex flex-col items-center justify-center">
-		<Panel header="Login">
+		<Panel :header="t('title')">
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col gap-2">
-					<label for="email">Email</label>
+					<label for="email">{{ t('email') }}</label>
 					<InputText id="email" v-model="form.email" :disabled="isLoading" />
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label for="password">Password</label>
+					<label for="password">{{ t('password') }}</label>
 					<Password
 						id="password"
 						v-model="form.password"
@@ -75,18 +82,18 @@ async function login() {
 						:disabled="isLoading"
 						binary
 					/>
-					<label for="remember_me" class="ml-2">Remember me</label>
+					<label for="remember_me" class="ml-2">{{ t('remember') }}</label>
 				</div>
 
 				<div class="flex gap-2">
 					<Button class="grow" severity="secondary" @click="router.back()">
 						<font-awesome-icon icon="chevron-left" class="mr-2" />
-						Back
+						{{ trans('common.back') }}
 					</Button>
 
 					<Button
 						class="grow"
-						label="Login"
+						:label="t('login')"
 						:loading="isLoading"
 						@click="login"
 					/>
@@ -94,11 +101,11 @@ async function login() {
 
 				<div class="flex gap-2 justify-between">
 					<router-link to="forgot-password" class="hover:underline text-center">
-						Forgot password?
+						{{ t('forgot_password') }}
 					</router-link>
 
 					<router-link to="register" class="hover:underline text-center">
-						No account?
+						{{ t('no_account') }}
 					</router-link>
 				</div>
 			</div>
