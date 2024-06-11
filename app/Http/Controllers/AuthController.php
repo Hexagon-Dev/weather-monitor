@@ -27,7 +27,7 @@ class AuthController extends Controller
         event(new Registered($user));
 
         return response()->json(
-            ['message' => 'Successfully registered and automatically logged in. Please confirm your email.'],
+            ['message' => __('auth.successfully_registered')],
             201,
         );
     }
@@ -43,10 +43,10 @@ class AuthController extends Controller
         if (Auth::attempt($data, $data['remember'] ?? false)) {
             session()->regenerate();
 
-            return response()->json(['message' => 'Successfully logged in.']);
+            return response()->json(['message' => __('auth.logged_in')]);
         }
 
-        return response()->json(['message' => 'Invalid credentials.'], 401);
+        return response()->json(['message' => __('auth.invalid_credentials')], 401);
     }
 
     public function changePassword(Request $request): JsonResponse
@@ -59,12 +59,12 @@ class AuthController extends Controller
         ]);
 
         if (!password_verify($data['current_password'], $user->password)) {
-            return response()->json(['message' => 'Invalid password.'], 401);
+            return response()->json(['message' => __('auth.invalid_password')], 401);
         }
 
         $user->update(['password' => bcrypt($data['new_password'])]);
 
-        return response()->json(['message' => 'Password was successfully updated.']);
+        return response()->json(['message' => __('auth.password_updated')]);
     }
 
     public function sendResetPasswordEmail(Request $request): JsonResponse
@@ -73,7 +73,7 @@ class AuthController extends Controller
 
         Password::sendResetLink($request->only('email'));
 
-        return response()->json(['message' => 'Reset link was sent to your email if it was found.']);
+        return response()->json(['message' => __('auth.reset_link_sent')]);
     }
 
     public function resetPassword(Request $request): JsonResponse
@@ -103,22 +103,22 @@ class AuthController extends Controller
         }
 
         return $isSuccess
-            ? response()->json(['message' => 'Password was successfully reset, and you were automatically logged in.'])
-            : response()->json(['message' => 'Invalid token or email.'], 401);
+            ? response()->json(['message' => __('auth.password_reset')])
+            : response()->json(['message' => __('auth.reset_link_invalid')], 401);
     }
 
     public function sendVerificationEmail(Request $request): JsonResponse
     {
         $request->user()->sendEmailVerificationNotification();
 
-        return response()->json(['message' => 'Verification link was sent.']);
+        return response()->json(['message' => __('auth.verification_link_sent')]);
     }
 
     public function verifyEmail(EmailVerificationRequest $request): JsonResponse
     {
         $request->fulfill();
 
-        return response()->json(['message' => 'Email was successfully verified.']);
+        return response()->json(['message' => __('auth.email_verified')]);
     }
 
     public function logout(Request $request): JsonResponse
@@ -129,6 +129,6 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return response()->json(['message' => 'Successfully logged out.']);
+        return response()->json(['message' => __('auth.logged_out')]);
     }
 }

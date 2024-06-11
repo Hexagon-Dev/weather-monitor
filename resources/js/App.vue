@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useI18n } from 'vue-i18n';
 import { useStorage } from '@vueuse/core';
 import { watch } from 'vue';
+import api from '@/plugins/api';
 
 const { t } = useI18n();
 
@@ -91,6 +92,7 @@ locale.value = storedLocale.value;
 
 watch(locale, () => {
 	storedLocale.value = locale.value;
+	api.defaults.headers.common['Accept-Language'] = locale.value;
 });
 </script>
 

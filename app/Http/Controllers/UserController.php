@@ -27,7 +27,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return response()->json(['message' => 'Successfully updated.', 'user' => UserResource::make($user)]);
+        return response()->json(['message' => __('crud.update_success'), 'user' => UserResource::make($user)]);
     }
 
 	public function deleteMe(Request $request): JsonResponse
@@ -39,6 +39,6 @@ class UserController extends Controller
 
 		$user->delete();
 
-		return response()->json(['message' => 'Successfully deleted.']);
+		return response()->json(['message' => __('crud.delete_success')]);
 	}
 }
