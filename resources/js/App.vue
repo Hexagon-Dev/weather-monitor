@@ -6,6 +6,8 @@ import { useLocationsStore } from '@/stores/locationsStore';
 import { useDark, useToggle } from '@vueuse/core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useI18n } from 'vue-i18n';
+import { useStorage } from '@vueuse/core';
+import { watch } from 'vue';
 
 const { t } = useI18n();
 
@@ -80,6 +82,16 @@ const isDark = useDark();
 const toggleDark = useToggle(isDark);
 
 const { locale } = useI18n();
+
+const language = navigator.language || navigator.userLanguage;
+
+const storedLocale = useStorage('locale', language.slice(0, 2));
+
+locale.value = storedLocale.value;
+
+watch(locale, () => {
+	storedLocale.value = locale.value;
+});
 </script>
 
 <template>
