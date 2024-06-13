@@ -14,7 +14,7 @@ onMounted(async () => {
 	useEventListener(window, 'resize', () => chart.resize());
 
 	chart.setOption({
-		tooltip: { trigger: 'axis' },
+		tooltip: { trigger: 'axis', className: 'dark:!bg-surface-900 dark:!border-surface-800' },
 		legend: { data: ['Users'] },
 		grid: {
 			left: '2%',

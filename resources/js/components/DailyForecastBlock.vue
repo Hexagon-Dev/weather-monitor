@@ -142,8 +142,8 @@ const smallerOrEqualMd = computed(() => smallerOrEqual('md').value);
 				</p>
 
 				<p class="text-lg">
-					<font-awesome-icon icon="caret-up" />{{ temperatureMinToday }}°C
-					<font-awesome-icon icon="caret-down" class="ml-2" /> {{ temperatureMaxToday }}°C
+					<font-awesome-icon icon="caret-up" />{{ temperatureMaxToday }}°C
+					<font-awesome-icon icon="caret-down" class="ml-2" /> {{ temperatureMinToday }}°C
 				</p>
 			</div>
 
@@ -161,17 +161,17 @@ const smallerOrEqualMd = computed(() => smallerOrEqual('md').value);
 					:disabled="getDayOfYear(selectedDate) === getDayOfYear(weatherDay.forecasted_at)"
 					@click="selectDate(weatherDay.forecasted_at)"
 				>
-					<div class="md:w-auto w-11 flex-none">
+					<div class="md:w-auto w-12 flex-none md:text-base text-xs">
 						{{ isToday(weatherDay.forecasted_at) ? t('today') : format(weatherDay.forecasted_at, 'EEE') }}
 					</div>
 
 					<WeatherIcon
 						:type="weatherDay.type"
-						class="text-primary-500"
+						class="text-primary-500 w-6 flex-none"
 						size="lg"
 					/>
 
-					<p class="font-black w-12 flex-none">
+					<p class="font-black w-12 flex-none md:text-base text-sm">
 						{{ smallerOrEqualMd ? weatherDay.min : weatherDay.max }}°C
 					</p>
 
@@ -182,7 +182,7 @@ const smallerOrEqualMd = computed(() => smallerOrEqual('md').value);
 						:max="weatherDay.max"
 					/>
 
-					<p class="font-black w-12 flex-none">
+					<p class="font-black w-12 flex-none md:text-base text-sm">
 						{{ smallerOrEqualMd ? weatherDay.max : weatherDay.min }}°C
 					</p>
 				</button>

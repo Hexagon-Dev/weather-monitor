@@ -43,7 +43,7 @@ const weatherToday = computed<Weather[]>(() => {
 				class="text-primary-500"
 				size="xl"
 			/>
-			<WeatherName :type="weather.type" class="h-12" />
+			<WeatherName :type="weather.type" class="h-12 md:text-base text-sm" />
 
 			<p>
 				{{ weather.humidity }}%

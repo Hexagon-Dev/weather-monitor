@@ -17,7 +17,7 @@
 			"only_auth": "Only for authorized users",
 			"share": "Share",
 			"share_on": "Share on",
-			"share_title": "Checkout weather forecast on \"Weather Monitor\" for ",
+			"share_title": "Checkout weather forecast on \"Weather Monitor\" for",
 			"csv_exported": "CSV file has been exported successfully."
 		},
 		"profile": {
@@ -101,7 +101,7 @@
 			"rain_showers_slight": "Slight rain showers",
 			"rain_showers_moderate": "Moderate rain showers",
 			"rain_showers_violent": "Violent rain showers",
-			"snow_showers_light": "Light snow showers",
+			"snow_showers_slight": "Light snow showers",
 			"snow_showers_heavy": "Heavy snow showers",
 			"thunderstorm": "Thunderstorm",
 			"thunderstorm_with_hail_slight": "Slight thunderstorm with hail",

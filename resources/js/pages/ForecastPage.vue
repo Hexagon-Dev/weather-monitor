@@ -35,7 +35,7 @@ watch(location,() => {
 
 const selectedDate = ref<Date>(new Date());
 
-const shareTitle = computed(() => t('share_title') + location.value.name);
+const shareTitle = computed(() => t('share_title') + ' ' + location.value.name);
 
 const shareNetworks = computed(() => [
 	{

@@ -103,7 +103,7 @@ watch(locale, () => {
 				<router-link to="/" class="mr-6 flex items-center gap-2 whitespace-nowrap">
 					<font-awesome-icon icon="sun" size="2xl" class="text-primary-500" />
 
-					<h1 class="text-xl font-bold text-surface-500 dark:text-white/80">
+					<h1 class="text-xl font-bold text-surface-500 dark:text-white/80 sm:block hidden">
 						Weather Monitor
 					</h1>
 				</router-link>
@@ -148,7 +148,7 @@ watch(locale, () => {
 							<div v-if="slotProps.value" class="flex align-items-center">
 								<img
 									:alt="slotProps.value"
-									:src="`images/lang/${slotProps.value}.svg`"
+									:src="`/images/lang/${slotProps.value}.svg`"
 									class="mr-1 w-4"
 								>
 								<div class="w-6">
@@ -164,7 +164,7 @@ watch(locale, () => {
 							<div class="flex align-items-center">
 								<img
 									:alt="slotProps.option"
-									:src="`images/lang/${slotProps.option}.svg`"
+									:src="`/images/lang/${slotProps.option}.svg`"
 									class="mr-2 w-4"
 								>
 								<div>{{ slotProps.option }}</div>

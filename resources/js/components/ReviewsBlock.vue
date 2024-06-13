@@ -6,6 +6,7 @@ import { useToast } from 'primevue/usetoast';
 import { useUserStore } from '@/stores/userStore';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useI18n } from 'vue-i18n';
+import { format } from 'date-fns';
 
 const props = defineProps<{
 	selectedLocation: Location;
@@ -59,7 +60,7 @@ async function submitComment() {
 	if (status === 201) {
 		toast.add({
 			severity: 'success',
-			summary: 'Success',
+			summary: trans('common.success'),
 			detail: t('review_added'),
 			life: 3000,
 		});
@@ -69,7 +70,7 @@ async function submitComment() {
 	} else {
 		toast.add({
 			severity: 'error',
-			summary: 'Error',
+			summary: trans('common.error'),
 			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
@@ -88,7 +89,7 @@ async function deleteReview(reviewId: number) {
 	if (status === 204) {
 		toast.add({
 			severity: 'success',
-			summary: 'Success',
+			summary: trans('common.success'),
 			detail: t('review_deleted'),
 			life: 3000,
 		});
@@ -97,7 +98,7 @@ async function deleteReview(reviewId: number) {
 	} else {
 		toast.add({
 			severity: 'error',
-			summary: 'Error',
+			summary: trans('common.error'),
 			detail: data?.message ?? trans('common.request_failed'),
 			life: 10000,
 		});
@@ -162,11 +163,13 @@ async function deleteReview(reviewId: number) {
 					</Button>
 
 					<p class="text-sm text-surface-600 dark:text-surface-400">
-						{{ review.created_at.slice(0, 19).replace('T', ' ') }}
+						{{ format(review.created_at, 'yyyy-MM-dd HH:mm') }}
 					</p>
 				</div>
 
-				<p>{{ review.comment }}</p>
+				<p>
+					{{ review.comment }}
+				</p>
 			</div>
 		</div>
 	</div>

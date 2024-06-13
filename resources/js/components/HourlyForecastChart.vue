@@ -24,7 +24,7 @@ onMounted(async () => {
 	useEventListener(window, 'resize', () => chart.resize());
 
 	chart.setOption({
-		tooltip: { trigger: 'axis' },
+		tooltip: { trigger: 'axis', className: 'dark:!bg-surface-900 dark:!border-surface-800' },
 		legend: {
 			data: ['Temperature', 'Humidity', 'Wind Speed', 'Pressure'],
 			// With pressure enabled - data is offset too much, so it is disabled by default.
